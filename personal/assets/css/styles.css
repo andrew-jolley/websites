@@ -1,0 +1,25 @@
+body {
+	background-color: whitesmoke;
+	font-family: 'Roboto', sans-serif;
+}
+
+h1 {
+	color: #8C4100;
+	text-transform: none;
+}
+
+.txt:hover {
+    text-decoration: underline;
+}
+
+#im7r7-2 {
+	text-align: right;
+}
+
+#imlct {
+	color: #d97016;
+}
+
+#inrsl {
+	color: #d97016;
+}

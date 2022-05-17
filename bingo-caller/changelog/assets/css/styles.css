@@ -1,0 +1,155 @@
+html {
+    background-color: #f2f2f2;
+    font-size: 14.5px;
+    line-height: 1.4;
+}
+
+body {
+    margin: 0;
+}
+
+main {
+    margin: auto;
+    background-color: #fff;
+    padding: 50px;
+}
+
+article {
+    padding: 20px 0;
+}
+
+ul {
+    margin: 0 0 12px;
+    padding: 0 0 0 20px;
+}
+
+li {
+    margin: 0 0 4px;
+    padding: 0;
+    position: relative;
+}
+
+p, h2, h3, h4 {
+    margin: 0 0 12px;
+}
+
+#icon {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    margin-right: 5px;
+    background-image: url("https://static.agilebits.com/app-updates/op6.png");
+    background-size: contain;
+}
+
+#icon.SCIM {
+    background-image: url("https://static.agilebits.com/app-updates/scim-icon.png");
+}
+
+#icon.OPX4 {
+    background-image: url("https://static.agilebits.com/app-updates/jse.png");
+}
+
+#icon.OPM3, #icon.OPW3, #icon.OPM2 {
+    background-image: url("https://static.agilebits.com/app-updates/op3.png");
+}
+
+#icon.OPW4 {
+    background-image: url("https://static.agilebits.com/app-updates/op4.png");
+}
+
+#icon.KNOX {
+    background-image: url("https://static.agilebits.com/app-updates/knox.png");
+}
+
+h1 {
+    display: inline-block;
+    font-size: 32px;
+    color: #1A8CFF;
+    margin: 0;
+    margin-bottom: 25px;
+    vertical-align: 13px;
+}
+
+h2 {
+    font-size: 24px;
+}
+
+h3 {
+    font-size: 22px;
+    margin: 0;
+}
+
+.cli-archs h4 {
+    font-size: 16px;
+    margin: 15px 0 5px;
+}
+
+h4.change {
+    border-radius: 30px;
+    padding: 1px 8px 2px;
+    display: inline-block;
+    color: white;
+    text-transform: uppercase;
+    font-size: 13px;
+    margin-bottom: 6px;
+    cursor: default;
+}
+.new {
+    background-color: hsl(35, 100%, 50%);
+}
+
+.improvements {
+    background-color: hsl(210, 100%, 60%);
+}
+
+.fixed {
+    background-color: hsl(120, 100%, 35%);
+}
+
+.security {
+    background-color: hsl(210, 10%, 60%)
+}
+
+a {
+    color: #1A8CFF !important;
+    text-decoration: none;
+}
+
+a:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+}
+
+hr:first-of-type {
+    margin-top: 35px;
+}
+
+label {
+    margin-left: 1px;
+    font-style: italic;
+    vertical-align: -1px;
+}
+
+@media only screen and (min-width: 600px) {
+    main {
+        max-width: 850px;
+        border-radius: 4px;
+        -moz-border-radius: 4px;
+        -khtml-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        box-shadow: 0px 8px 20px #dadbdd;
+    }
+    body {
+        padding: 60px;
+    }
+}

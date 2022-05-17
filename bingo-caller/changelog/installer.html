@@ -1,0 +1,502 @@
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Bingo Caller">
+    <meta name="keywords" content="Windows,Python,Bingo,Installer">
+    <meta name="author" content="Bingo Code">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="application-name" content="Bingo Caller">
+	<link rel="icon" href="https://www.bingocaller.me/assets/img/favicon.ico" type="image/x-icon">
+	<link rel="stylesheet" href="/assets/css/styles.css">
+    <meta name="msapplication-TileColor" content="#3f4555">
+	<title>Bingo Caller Installer Changelog</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+    <style>
+		@import url(//cdnjs.cloudflare.com/ajax/libs/normalize/3.0.1/normalize.min.css);
+		@import url(//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css);
+	</style>
+	<link rel="stylesheet" href="https://2-22-4-dot-lead-pages.appspot.com/static/lp918/min/default_thank_you.css">
+	<script src="https://2-22-4-dot-lead-pages.appspot.com/static/lp918/min/jquery-1.9.1.min.js"></script>
+	<script src="https://2-22-4-dot-lead-pages.appspot.com/static/lp918/min/html5shiv.js"></script>
+
+	<script type="text/javascript">
+		document.addEventListener("DOMContentLoaded", function() {
+
+			document.getElementById("allow_betas").addEventListener("change", function(event) {
+				var betaElements = document.querySelectorAll(".beta");
+				for (var i = 0; i < betaElements.length; i++) {
+					var betaElement = betaElements[i];
+					betaElement.style.display = betaElement.style.display === "none" ? "block" : "none";
+				}
+			});
+
+			if (document.getElementById("allow_betas").checked) {
+				var betaElements = document.querySelectorAll(".beta");
+				for (var i = 0; i < betaElements.length; i++) {
+					var betaElement = betaElements[i];
+					betaElement.style.display = "block";
+				}
+			}
+
+			if (window.location.hash === "#beta") {
+				document.getElementById("allow_betas").checked = true;
+				var betaElements = document.querySelectorAll(".beta");
+				for (var i = 0; i < betaElements.length; i++) {
+					var betaElement = betaElements[i];
+					betaElement.style.display = "block";
+				}
+			}
+
+		});
+	</script>
+
+</head>
+
+<body>
+
+	<main>
+		<h1><a href="https://apps.bingocaller.me"><u>Bingo Caller Installer</u></a></h1>
+		<h2><u>Release Notes</u></h2>
+
+		<div style="text-align: left;">
+
+			<p>
+				<input type="checkbox" id="allow_betas" /><label for="allow_betas">Show betas</label>
+			</p>
+
+			<article id="v912">
+				<h3>
+					Version 9.1.2
+					<span style="font-size: .75em; font-weight: normal">
+						– Released 26-04-2022 – <a href="https://github.com/BingoCaller2020/bingocaller/releases/download/v9.1.2/Bingo_Caller_Setup.exe"">download</a>
+					</span>
+				</h3>
+				<p></p>
+					<h4 class="fixed change">Fixed</h4>
+					<ul>
+						<li>Version updates</li>
+						<li>Bug fixes</li>
+					</ul>
+			</article>
+
+		<hr>
+			<article id="v911">
+				<h3>
+					Version 9.1.1
+					<span style="font-size: .75em; font-weight: normal">
+						– Released 16-04-2022 – <a href="https://github.com/BingoCaller2020/bingocaller/releases/download/v9.1.1/Bingo_Caller_Setup.exe">download</a>
+					</span>
+				</h3>
+				<p></p>
+					<h4 class="fixed change">Fixed</h4>
+					<ul>
+						<li>Link updates</li>
+						<li>Bug fixes</li>
+					</ul>
+			</article>
+
+		<hr>
+
+			<article id="v910">
+				<h3>
+					Version 9.1.0
+					<span style="font-size: .75em; font-weight: normal">
+						– Released 13-03-2022 – <a href="https://github.com/BingoCaller2020/bingocaller/releases/download/v9.1.0/Bingo_Caller_Setup.exe">download</a>
+					</span>
+				</h3>
+				<p></p>
+					<h4 class="fixed change">Fixed</h4>
+					<ul>
+						<li>Link updates</li>
+						<li>Bug fixes</li>
+					</ul>
+			</article>
+
+		<hr>
+
+
+			<article id="v900">
+				<h3>
+					Version 9.0.0
+					<span style="font-size: .75em; font-weight: normal">
+						– Released 26-02-2022 – <a href="https://github.com/BingoCaller2020/bingocaller/releases/download/v9.0.0/Bingo_Caller_Setup.exe">download</a>
+					</span>
+				</h3>
+				<p></p>
+					<h4 class="new change">Fixed</h4>
+					<ul>
+						<li>.NET versions</li>
+						<li>Colour system removed due to Windows 11 incompatibility</li>
+						<li>Allowances for beta updates</li>
+						<li>In built beta updater</li>
+						<li>Beta opt-in</li>
+					</ul>
+					<h4 class="improvements change">Fixed</h4>
+					<ul>
+						<li>Download speeds</li>
+						<li>Exit program methods</li>
+					</ul>
+					<h4 class="fixed change">Fixed</h4>
+					<ul>
+						<li>Bug fixes</li>
+					</ul>
+					<h4 class="security change">Fixed</h4>
+					<ul>
+						<li>Updated software update</li>
+					</ul>
+			</article>
+
+		<hr>
+
+			<article id="v900b"class="beta" style="display:none;">
+				<h3>
+					Version 9.0.0 - Beta
+					<span style="font-size: .75em; font-weight: normal">
+						– <a href="https://github.com/BingoCaller2020/bingocaller/releases/download/v9.0.0-beta4/Bingo_Caller_Setup.exe">download</a>
+					</span>
+				</h3>
+				<p></p>
+				<h4>Beta 6 – Released 25-02-2022</h4>
+				<h4 class="fixed change">Fixed</h4>
+				<ul>
+					<li>Updater bug fixes</li>
+				</ul>
+				<h4>Beta 5 – Released 21-02-2022</h4>
+				<h4 class="fixed change">Fixed</h4>
+				<ul>
+					<li>Updater bug fixes</li>
+				</ul>
+				<br>
+				<p></p>
+				<h4>Beta 4 – Released 20-02-2022</h4>
+				<h4 class="fixed change">Fixed</h4>
+				<ul>
+					<li>Bug fixes</li>
+				</ul>
+				<br>
+				<p></p>
+				<h4>Beta 3 – Released 19-02-2022</h4>
+				<h4 class="fixed change">Fixed</h4>
+				<ul>
+					<li>Bug fixes</li>
+				</ul>
+				<br>
+				<p></p>
+				<h4>Beta 2 – Released 19-02-2022</h4>
+					<h4 class="new change">New</h4>
+					<ul>
+						<li>In built beta updater</li>
+					</ul>
+					<h4 class="fixed change">Fixed</h4>
+					<ul>
+						<li>Bug fixes</li>
+					</ul>
+				<br>
+				<p></p>
+				<h4>Beta 1 – Released 18-02-2022</h4>
+					<h4 class="new change">New</h4>
+					<ul>
+						<li>.NET versions</li>
+						<li>Colour system removed due to Windows 11 incompatibility</li>
+						<li>Allowances for beta updates</li>
+					</ul>
+					<h4 class="improvements change">Improved</h4>
+					<ul>
+						<li>Download speeds</li>
+						<li>Exit program methods</li>
+					</ul>
+					<h4 class="fixed change">Fixed</h4>
+					<ul>
+						<li>Bug fixes</li>
+					</ul>
+					<h4 class="security change">Security</h4>
+					<ul>
+						<li>Updated software update</li>
+					</ul>
+					<hr>
+			</article>
+
+			<article id="v822">
+				<h3>
+					Version 8.2.2
+					<span style="font-size: .75em; font-weight: normal">
+						– Released 2022-01-15 – <a href="https://github.com/BingoCaller2020/bingocaller/releases/download/v47/Bingo_Caller_Setup.exe">download</a>
+					</span>
+				</h3>
+				<p></p>
+					<h4 class="fixed change">Fixed</h4>
+					<ul>
+						<li>Link updates</li>
+						<li>Bug fixes</li>
+					</ul>
+			</article>
+
+		<hr>
+
+			<article id="v821">
+				<h3>
+					Version 8.2.1
+					<span style="font-size: .75em; font-weight: normal">
+						– Released 2021-12-13 – <a href="https://github.com/BingoCaller2020/bingocaller/releases/download/v46/Bingo_Caller_Setup.exe">download</a>
+					</span>
+				</h3>
+				<p></p>
+					<h4 class="fixed change">Fixed</h4>
+					<ul>
+						<li>Bug fixes</li>
+					</ul>
+			</article>
+
+		<hr>
+
+			<article id="v820">
+				<h3>
+					Version 8.2.0
+					<span style="font-size: .75em; font-weight: normal">
+						– Released 2021-10-27 – <a href="https://github.com/BingoCaller2020/bingocaller/releases/download/v45/Bingo_Caller_Setup.exe">download</a>
+					</span>
+				</h3>
+				<p></p>
+					<h4 class="new change">New</h4>
+					<ul>
+						<li>.NET Download</li>
+					</ul>
+					<h4 class="fixed change">Fixed</h4>
+					<ul>
+						<li>Bug fixes</li>
+					</ul>
+			</article>
+
+		<hr>
+
+			<article id="v815">
+				<h3>
+					Version 8.1.5
+					<span style="font-size: .75em; font-weight: normal">
+						– Released 2021-10-24 – <a href="https://github.com/BingoCaller2020/bingocaller/releases/download/v44/Bingo_Caller_Setup.exe">download</a>
+					</span>
+				</h3>
+				<p></p>
+
+					<h4 class="new change">New</h4>
+					<ul>
+						<li>New installer</li>
+					</ul>
+			</article>
+
+		<hr>
+
+			<article id="v814">
+				<h3>
+					Version 8.1.4
+					<span style="font-size: .75em; font-weight: normal">
+						– Released 2021-09-20 – <a href="https://github.com/BingoCaller2020/bingocaller/releases/download/v43/Bingo_Caller_Setup.exe">download</a>
+					</span>
+				</h3>
+				<p></p>
+
+					<h4 class="new change">New</h4>
+					<ul>
+						<li>New versioning system fixed</li>
+					</ul>
+			</article>
+
+		<hr>
+			<article id="v813">
+				<h3>
+					Version 8.1.3
+					<span style="font-size: .75em; font-weight: normal">
+						– Released 2021-06-22 – <a href="https://github.com/BingoCaller2020/bingocaller/releases/download/v8.1.3/Bingo_Caller_Setup.exe">download</a>
+					</span>
+				</h3>
+				<p></p>
+				<h4 class="fixed change">Fixed</h4>
+				<ul>
+					<li>Bugs fixed</li>
+				</ul>
+				<h4 class="improvements change">Improvements</h4>
+				<ul>
+					<li>Performance improvements</li>
+					<li>Links updated</li>
+				</ul>
+			</article>
+
+		<hr>
+
+			<article id="v812">
+				<h3>
+					Version 8.1.2
+					<span style="font-size: .75em; font-weight: normal">
+						– Released 2021-04-08 – <a href="https://github.com/BingoCaller2020/bingocaller/releases/download/v8.1.2/Bingo_Caller_Setup.exe">download</a>
+					</span>
+				</h3>
+				<p></p>
+				<h4 class="fixed change">Fixed</h4>
+				<ul>
+					<li>Multiple bugs fixed</li>
+				</ul>
+			</article>
+
+		<hr>
+
+			<article id="v811">
+				<h3>
+					Version 8.1.1
+					<span style="font-size: .75em; font-weight: normal">
+						– Released 2021-04-02 – <a href="https://github.com/BingoCaller2020/bingocaller/releases/download/v8.1.1/Bingo_Caller_Setup.exe">download</a>
+					</span>
+				</h3>
+				<p></p>
+				<h4 class="fixed change">Fixed</h4>
+				<ul>
+					<li>Multiple bugs fixed</li>
+				</ul>
+				<h4 class="improvements change">Improved</h4>
+				<ul>
+					<li>Setup program updated</li>
+				</ul>
+			</article>
+
+		<hr>
+
+			<article id="v810">
+				<h3>
+					Version 8.1.0
+					<span style="font-size: .75em; font-weight: normal">
+						– Released 2021-03-25 – <a href="https://github.com/BingoCaller2020/bingocaller/releases/download/v8.1.0/Bingo_Caller_Setup.exe">download</a>
+					</span>
+				</h3>
+				<p></p>
+				<h4 class="fixed change">Fixed</h4>
+				<ul>
+					<li>Multiple bugs fixed</li>
+					<li>Brand names fixed</li>
+				</ul>
+				<h4 class="improvements change">Improved</h4>
+				<ul>
+					<li>Improved colour program</li>
+				</ul>
+			</article>
+
+		<hr>
+
+			<article id="v802">
+				<h3>
+					Version 8.0.2
+					<span style="font-size: .75em; font-weight: normal">
+						– Released 2021-02-03 – <a href="https://github.com/BingoCaller2020/bingocaller/releases/download/v8.0.2/Bingo_Caller_Setup.exe">download</a> 
+					</span>
+				</h3>
+				<p></p>
+				<h4 class="fixed change">Fixed</h4>
+				<ul>
+					<li>12 bugs fixed</li>
+				</ul>
+
+				<h4 class="security change">Security</h4>
+				<ul>
+					<li>Data transfer uses HTTPS</li>
+				</ul>
+			</article>
+		
+		<hr>
+
+			<article id="v801">
+				<h3>
+					Version 8.0.1
+					<span style="font-size: .75em; font-weight: normal">
+						– Released 2021-01-13 – <a href="https://github.com/BingoCaller2020/bingocaller/releases/download/v8.0.1/Bingo_Caller_Setup.exe">download</a> 
+					</span>
+				</h3>
+				<p></p>
+				<h4 class="fixed change">Fixed</h4>
+				<ul>
+					<li>Fixed some bugs</li>
+				</ul>
+
+				<h4 class="new change">New</h4>
+				<ul>
+					<li>Major update checker</li>
+					<li>Console colour changing</li>
+				</ul>
+				<h4 class="improvements change">Improved</h4>
+				<ul>
+					<li>Load time improved</li>
+				</ul>
+			</article>
+
+		<hr>
+
+			<article id="v800">
+				<h3>
+					Version 8.0
+					<span style="font-size: .75em; font-weight: normal">
+						– Released 2021-01-03 – <a href="https://github.com/BingoCaller2020/bingocaller/releases/download/v8.0/Bingo_Caller_Setup.exe">download</a> 
+					</span>
+				</h3>
+				<p></p>
+				<h4 class="fixed change">Fixed</h4>
+				<ul>
+					<li>Fixed some bugs</li>
+				</ul>
+
+				<h4 class="new change">New</h4>
+				<ul>
+					<li>Now calls the traditional calls with each number</li>
+				</ul>
+			</article>
+		
+		<hr>
+
+			<article id="v702">
+
+				<h3>
+					Version 7.0.2
+					<span style="font-size: .75em; font-weight: normal">
+						– Released 2020-12-29 – <a href="https://github.com/BingoCaller2020/bingocaller/releases/download/v7.0.2/Bingo_Caller_Setup.exe">download</a>
+					</span>
+				</h3>
+				<p></p>
+				<h4 class="fixed change">Fixed</h4>
+				<ul>
+					<li>Fixed new website links</li>
+					<li>Fixed bugs with build system</li>
+				</ul>
+
+				<h4 class="improvements change">Improved</h4>
+				<ul>
+					<li>DLLs Updated</li>
+				</ul>
+			</article>
+		
+		<hr>
+
+			<article id="v701">
+
+				<h3>
+					Version 7.0.1
+					<span style="font-size: .75em; font-weight: normal">
+						– Released 2020-12-12 – <a href="https://github.com/BingoCaller2020/bingocaller/releases/download/v7.0.1/Bingo_Caller_Setup.exe">download</a>
+					</span>
+				</h3>
+				<p></p>
+				<h4 class="fixed change">Fixed</h4>
+				<ul>
+					<li>Fixed language issues</li>
+					<li>Fixed mailing list button</li>
+					<li>Fixed a bug where the end text would appear after every call</li>
+				</ul>
+
+				<h4 class="improvements change">Improved</h4>
+				<ul>
+					<li>Load time improved</li>
+					<li>Digital Signature updated</li>
+				</ul>
+			</article>
+		</div>
+	
+	<footer>
+		<a href="https://andrewjolley.co.uk">© Andrew Jolley 2022</a> - Version 4.3
+	</footer>
+
+	</main>
+</body>
