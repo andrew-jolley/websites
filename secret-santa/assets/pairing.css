@@ -1,0 +1,109 @@
+* {
+    box-sizing: border-box;
+}
+
+html, body, .main {
+    margin: 0;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 0;
+}
+
+body {
+    background: url(./assets/snow.png), url(./assets/santa.png), url(./assets/snow.png), radial-gradient(#FB3B3B, #EF3D3D);
+    background-repeat: repeat, no-repeat, repeat, no-repeat;
+
+    animation-name: snow;
+    animation-duration: 5s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes snow {
+    from { background-position: 130px 40px, bottom right, 0 0, 0 0; }
+    to { background-position: 130px 640px, bottom right, 0 300px, 0 0; }
+}
+
+.spirit-of-christmas {
+    display: block;
+
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    padding: 20px;
+
+    font-size: 10px;
+    text-decoration: none;
+
+    color: #FFFFFF;
+}
+
+.main {
+    display: flex;
+}
+
+.background {
+    position: absolute;
+
+    left: 0;
+    bottom: 0;
+}
+
+.wrapper {
+    margin: auto;
+    padding: 20px;
+
+    background: repeating-linear-gradient(
+        45deg,
+        #5CC48A,
+        #5CC48A 30px,
+        #FFFFFF 30px,
+        #FFFFFF 60px,
+        #EF3D3D 60px,
+        #EF3D3D 90px,
+        #FFFFFF 90px,
+        #FFFFFF 120px
+    );
+
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, .5);
+}
+
+.content {
+    padding: 40px;
+
+    background: #ffffff;
+
+    text-align: center;
+}
+
+.title {
+    font-size: 30px;
+}
+
+#pairing-name {
+    font-size: 90px;
+}
+
+#pairing-details {
+    margin-bottom: 20px;
+
+    font-size: 20px;
+}
+
+.affiliate {
+    display: block;
+    box-sizing: content-box;
+
+    margin-top: 40px;
+
+    border: none;
+
+    background: rgba(255, 255, 255, .7);
+}
+
+.affiliate + .affiliate {
+    margin-top: 40px;
+}
