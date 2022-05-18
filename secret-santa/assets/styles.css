@@ -1,0 +1,128 @@
+* {
+    box-sizing: border-box;
+}
+
+html, body, .main {
+    margin: 0;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 0;
+}
+
+body {
+    background-image: url(santa.png);
+    background-position: bottom right;
+    background-repeat: no-repeat;
+}
+
+.main {
+    display: flex;
+}
+
+.part {
+    display: flex;
+    flex-direction: column;
+
+    padding: 20px;
+
+    flex: 1;
+}
+
+.instructions {
+    margin: auto 10%;
+}
+
+.instructions a {
+    text-decoration: none;
+
+    color: #0CB50C;
+}
+
+.input {
+    display: block;
+    align-self: stretch;
+
+    width: 100%;
+    flex: auto;
+
+    border: 10px solid #0CB50C;
+    border-radius: 10px;
+
+    padding: 15px;
+
+    background-color: rgba(255, 255, 255, .7);
+    outline: none;
+}
+
+.generate {
+    display: block;
+
+    margin-top: 20px;
+
+    flex: none;
+    height: 100px;
+
+    border: 10px solid #0CB50C;
+    border-radius: 10px;
+
+    font-family: inherit;
+    font-size: 40px;
+
+    background-color: #EA1212;
+    color: #FFFFFF;
+}
+
+.generate:focus {
+    border-color: #E6E020;
+
+    outline: none;
+}
+
+.result {
+    margin-top: 20px;
+
+    flex: none;
+
+    border: 10px solid #E6E020;
+    border-radius: 10px;
+
+    padding: 15px;
+
+    background: #FFFFFF;
+}
+
+.result a {
+    color: blue;
+}
+
+.result.none {
+    display: none;
+}
+
+.result.error {
+    border-color: #EA1212;
+
+    color: #EA1212;
+}
+
+.result-table {
+    table-layout: fixed;
+
+    width: 100%;
+}
+
+.result-name {
+    width: 30%;
+
+    padding: 5px 8px;
+}
+
+.result-link {
+    width: 100%;
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Secret Santa</title>
+        <script src="vendors/Lodash-3.10.1.js"></script>
+        <script src="vendors/Cryptojs.aes-3.1.2.js"></script>
+
+        <script src="./SecretSanta.js"></script>
+        <style>
+            @import url(//cdnjs.cloudflare.com/ajax/libs/normalize/3.0.1/normalize.min.css);
+            @import url(//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css);
+        </style>
+        <link rel="stylesheet" href="https://2-22-4-dot-lead-pages.appspot.com/static/lp918/min/default_thank_you.css">
+        <script src="https://2-22-4-dot-lead-pages.appspot.com/static/lp918/min/jquery-1.9.1.min.js"></script>
+        <script src="https://2-22-4-dot-lead-pages.appspot.com/static/lp918/min/html5shiv.js"></script>
+        <link rel="stylesheet" href="/assets/styles.css">
+
+    </head>
+
+    <body>
+
+        <div class="main">
+
+            <div class="part" style="overflow-y: auto">
+                <div class="instructions">
+                    <h1><img src="assets/mistletoe.png" style="vertical-align: middle" /> Secret Santa Generator</h1>
+                    <p>Just a simple Secret Santa Picker</p>
+                    <p>Just fill in the names on the right following the instructions in the box!</p>
+                    <p>Have fun!</p>
+                    <br><br><br><br>
+                    <p><a href="https://andrewjolley.co.uk">© Andrew Jolley 2022</a> - Version 1.6</p>
+                </div>
+            </div>
+
+            <form id="form" class="part">
+                <textarea id="input" class="input" autofocus></textarea>
+                <button type="submit" class="generate">Generate your pairings</button>
+                <div id="result" class="result none"></div>
+            </form>
+
+        </div>
+
+        <script id="input-placeholder" type="text/placeholder">
+            # You can add a user by adding a line:
+            Santa
+
+            # You can add some details if you want to, using brackets after the name:
+            Nicholas (the elf)
+
+            # You can prevent someone from being paired with someone else
+            Mark !Steven
+            Steven !Mark
+
+            # You can also exclude someone from being paired with multiple people
+            # Careful: too many exclusion rules can make your secret santa less interesting!
+            Rudolph !Santa !Nicholas (the elf)
+
+            # You can also cheat a bit and force someone to be paired with another
+            Nicholas (the saint) =Nicholas (the elf)
+
+            ...
+        </script>
+        
+    </body>
+
+    <script src="/assets/script-1.js"></script>
+    <script src="/assets/script-2.js"></script>
+
+</html>
