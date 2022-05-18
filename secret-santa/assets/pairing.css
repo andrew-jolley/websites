@@ -12,7 +12,7 @@ html, body, .main {
 }
 
 body {
-    background: url(./assets/snow.png), url(./assets/santa.png), url(./assets/snow.png), radial-gradient(#FB3B3B, #EF3D3D);
+    background: url(snow.png), url(santa.png), url(snow.png), radial-gradient(#FB3B3B, #EF3D3D);
     background-repeat: repeat, no-repeat, repeat, no-repeat;
 
     animation-name: snow;
