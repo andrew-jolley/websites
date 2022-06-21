@@ -23,6 +23,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <script> 
+        $(function(){
+        $("#header").load("header.html"); 
+        $("#footer").load("footer.html"); 
+        });
+    </script> 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q7M04JLH6L"></script>
     <script>
@@ -41,23 +48,7 @@
     <div class="body">
         <nav class="site-header sticky-top py-1"></nav>
         <div class="container">
-            <header class="blog-header py-3">
-                <div class="row flex-nowrap justify-content-between align-items-center">
-                  <div class="col-4 pt-1">
-                  </div>
-                  <h1 id="i1777">Bingo Caller
-                  </h1>
-                  <div class="col-4 text-center">
-                  </div>
-                </div>
-              </header>
-              <div class="nav-scroller py-1 mb-2">
-                <nav class="nav d-flex justify-content-between">
-                  <a href="https://bingocaller.me" class="p-2 text-muted">Home</a>
-                  <a href="download" class="p-2 text-muted">Download</a>
-                  <a href="get-help" class="p-2 text-muted">Support</a>
-                </nav>
-              </div>
+            <div id="header"></div>
         <center>
             <h1 id="isjw9">What can you find on our website?</h1>
         </center>
@@ -84,59 +75,8 @@
             </center>
         </div>
     </div>
-    <footer class="footer pt-5 pb-5 py-5 mt-auto bg-light footer-light">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-3">
-                    <div class="footer-brand font-weight-bold">Bingo Caller</div>
-                    <div class="mt-2 mb-5">Calling Numbers Faster</div>
-                    <div class="icon-footer-social mb-5"><a href="#!" class="icon-footer-social-link">
-                            <!-- <i class="fab fa-instagram"></i> Font Awesome fontawesome.com -->
-                        </a><a href="#!" class="icon-footer-social-link">
-                            <!-- <i class="fab fa-facebook"></i> Font Awesome fontawesome.com -->
-                        </a><a href="#!" class="icon-footer-social-link">
-                            <!-- <i class="fab fa-github"></i> Font Awesome fontawesome.com -->
-                        </a></div>
-                </div>
-                <div class="col-lg-9">
-                    <div class="row">
-                        <div class="col-lg-3 col-md-6 mb-5 mb-lg-0">
-                            <div class="text-uppercase-expanded text-xs font-weight-bold mb-4">Services</div>
-                            <ul class="list-unstyled mb-0">
-                                <li class="mb-2"><a href="download" id="ia1nz">Download</a></li>
-                                
-                                <li class="mb-2"><a href="https://bcd.rf.gd/changelog/" id="ia1nz-2">Changelog</a></li>
-                                
-                            </ul>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-5 mb-lg-0">
-                            <div class="text-uppercase-expanded text-xs font-weight-bold mb-4">Support</div>
-                            <ul class="list-unstyled mb-0">
-                                <li class="mb-2"><a href="get-help"  id="iyx5d">Support</a></li>
-                                <li class="mb-2"></li>
-                                <li></li>
-                            </ul>
-                        </div>
-                        <div class="col-lg-3 col-md-6">
-                            <div class="text-uppercase-expanded text-xs font-weight-bold mb-4">Legal</div>
-                            <ul class="list-unstyled mb-0">
-                                <li class="mb-2"><a href="privacy-policy" id="i5f0f7">Privacy Policy</a></li>
-                                <li class="mb-2"></li>
-                                <li class="mb-2"><a href="https://bingocaller.me/assets/pdf/licence.pdf">License</a></li>
-                                <li class="mb-2"><a href="https://bingocaller.me/assets/pdf/companies-uses.pdf">Who we share data with</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <hr class="my-5" />
-            <div class="row align-items-center">
-                <div class="col-md-6 small"><a href="https://andrewjolley.co.uk">Copyright © Andrew Jolley 2022</a>  - Version 8.3 <small>(260522)</small></div>
-                <div class="col-md-6 text-md-right small"><a draggable="true" data-highlightable="1" href="privacy-policy" id="il1xd7">Privacy Policy </a>·<a
-                        href="https://bingocaller.me/assets/pdf/licence.pdf"> Licence Agreement</a></div>
-            </div>
-        </div>
-    </footer>
+    <div id="footer"></div>
+
             <!-- Google Tag Manager (noscript) -->
             <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WV2V79B"
                 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
