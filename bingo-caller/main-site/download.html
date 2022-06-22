@@ -10,7 +10,7 @@
     <meta name="author" content="">
 
     <link rel="stylesheet" href="/assets/css/styles.css">
-    <script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"crossorigin="anonymous">
     	<style>
 		@import url(//cdnjs.cloudflare.com/ajax/libs/normalize/3.0.1/normalize.min.css);
@@ -23,7 +23,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
     <script> 
         $(function(){
         $("#header").load("header.html"); 
@@ -56,8 +55,25 @@
     <div class="body">
 
         <div class="container">
-            <div id="header"></div>
-
+            <nav class="site-header sticky-top py-1"></nav>
+            <div class="container">
+              <header class="blog-header py-3">
+                <div class="row flex-nowrap justify-content-between align-items-center">
+                  <div class="col-4 pt-1">
+                  </div>
+                  <h1 id="i1777">Bingo Caller
+                  </h1>
+                  <div class="col-4 text-center">
+                  </div>
+                </div>
+              </header>
+              <div class="nav-scroller py-1 mb-2">
+                <nav class="nav d-flex justify-content-between">
+                  <a href="https://bingocaller.me" class="p-2 text-muted">Home</a>
+                  <a href="download" class="p-2 text-muted">Download</a>
+                  <a href="get-help" class="p-2 text-muted">Support</a>
+                </nav>
+              </div>
             <div class="row"></div>
         </div>
     </div>
@@ -68,14 +84,23 @@
         <div class="container py-5">
             <a href="main" class="btn btn-primary btn-lg" style="color: white;">Windows<br/><small id="ijl7b1">Windows 7, 8, 8.1, 10 &amp; 11 <br/>x86, x64 & ARM64</small></a></div>
             <div class="dropdown">
-                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+                <!--<button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
                     Download other versions
                 </button>
                 <div class="dropdown-menu">
                     <a class="dropdown-item" href="beta"><small>Beta</small></a>
                     <a class="dropdown-item" href="portable"><small>Portable</small></a>
-                    <a class="dropdown-item" href="https://github.com/BingoCaller2020/bingocaller/archive/refs/tags/v9.1.2.zip"><small>Source Code</small></a>
+                    <a class="dropdown-item" href="https://github.com/BingoCaller2020/bingocaller/archive/refs/tags/v9.2.0.zip"><small>Source Code</small></a>
                     <a class="dropdown-item" data-toggle="modal" data-target="#myModal"><small>Legacy (Unsupported)</small></a>
+                </div> -->
+                <div class="dropdown" style="float:inline-start;">
+                    <button class="dropbtn"><small>Download other versions ⬇</small></button>
+                    <div class="dropdown-content">
+                        <a href="beta"><small>Beta</small></a>
+                        <a href="portable"><small>Portable</small></a>
+                        <a href="https://github.com/BingoCaller2020/bingocaller/archive/refs/tags/v9.2.0.zip"><small>Source Code</small></a>
+                        <a data-toggle="modal" data-target="#myModal"><small>Legacy (Unsupported)</small></a>
+                    </div>
                 </div>
             </div>
             <!-- The Modal -->
@@ -106,13 +131,7 @@
             <br>
             <br>
             <h4><a style="color: deepskyblue;" href="apple-version">What happened to the Apple version?</a></h4>
-            <!--<div class="dropdown" style="float:inline-start;">
-                <button class="dropbtn"><small>Download other versions ⬇</small></button>
-                <div class="dropdown-content">
-                    <a href="portable"><small>Portable</small></a>
-                    <a href="legacy"><small>Legacy (Unsupported)</small></a>
-                </div>
-            </div> -->
+
         </div>
     </center>
     <div id="footer"></div>
