@@ -1,8 +1,28 @@
-html, body {
+html,
+body {
   height: 100%;
   width: 100%;
   margin: 0px;
   background: linear-gradient(90deg, #2f3640 23%, #181b20 100%);
+}
+
+#more {
+  display: none;
+}
+
+.button_more {
+  background-color: #FAA466;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 16px;
+  font-family: "Righteous", cursive;
+
 }
 
 .moon {
