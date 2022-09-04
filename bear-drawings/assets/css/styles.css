@@ -15,7 +15,12 @@ th {
 	box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
   }
 
+body {
+	background-color: #E1F3FF;
+}
+
 * {
+	background-color: #E1F3FF;
 	font-family: Roboto, sans-serif;
 	box-sizing: border-box;
 	padding-top: 0px;
@@ -60,7 +65,7 @@ nav {
 	background-attachment: initial;
 	background-origin: initial;
 	background-clip: initial;
-	background-color: white;
+	background-color: #E1F3FF;
 	padding-top: 0px;
 	padding-right: 15px;
 	padding-bottom: 0px;
