@@ -1,0 +1,501 @@
+#digital {
+	width: 500px;
+	height: 500px;
+	object-fit: fill;
+}
+
+hr {
+	border-top: 1px solid black;
+}
+
+th {
+	background: white;
+	position: sticky;
+	top: 0; /* Don't forget this, required for the stickiness */
+	box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+  }
+
+* {
+	font-family: Roboto, sans-serif;
+	box-sizing: border-box;
+	padding-top: 0px;
+	padding-right: 0px;
+	padding-bottom: 0px;
+	padding-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+}
+
+#iyji {
+	font-size: 36px;
+	font-weight: 700;
+}
+
+#it69 {
+	font-size: 18px;
+	padding-top: 10px;
+	padding-right: 0px;
+	padding-bottom: 10px;
+	padding-left: 0px;
+}
+
+.is-size-1 {
+	font-size: 190px;
+	text-align: center;
+	text-decoration-line: underline;
+	text-decoration-thickness: initial;
+	text-decoration-style: initial;
+	text-decoration-color: initial;
+}
+
+nav {
+	background-image: initial;
+	background-position-x: initial;
+	background-position-y: initial;
+	background-size: initial;
+	background-repeat-x: initial;
+	background-repeat-y: initial;
+	background-attachment: initial;
+	background-origin: initial;
+	background-clip: initial;
+	background-color: white;
+	padding-top: 0px;
+	padding-right: 15px;
+	padding-bottom: 0px;
+	padding-left: 15px;
+	color: black;
+}
+
+a {
+	color: black;
+	text-decoration-line: none;
+	text-decoration-thickness: initial;
+	text-decoration-style: initial;
+	text-decoration-color: initial;
+}
+
+.menu {
+	list-style-type: none;
+}
+
+.submenu {
+	list-style-type: none;
+}
+
+.logo {
+	font-size: 20px;
+	padding-top: 7.5px;
+	padding-right: 10px;
+	padding-bottom: 7.5px;
+	padding-left: 0px;
+}
+
+.item {
+	padding-top: 10px;
+	padding-right: 10px;
+	padding-bottom: 10px;
+	padding-left: 10px;
+}
+
+.item.button {
+	padding-top: 9px;
+	padding-right: 5px;
+	padding-bottom: 9px;
+	padding-left: 5px;
+}
+
+.item:not(.button) a:hover,
+.item a:hover::after {
+	color: lightcoral;
+}
+
+.menu {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.menu li a {
+	display: block;
+	padding-top: 15px;
+	padding-right: 5px;
+	padding-bottom: 15px;
+	padding-left: 5px;
+}
+
+.menu li.subitem a {
+	padding-top: 15px;
+	padding-right: 15px;
+	padding-bottom: 15px;
+	padding-left: 15px;
+}
+
+.toggle {
+	order: 1;
+	font-size: 20px;
+}
+
+.item.button {
+	order: 2;
+}
+
+.item {
+	order: 3;
+	width: 100%;
+	text-align: center;
+	display: none;
+}
+
+.active .item {
+	display: block;
+}
+
+.button.secondary {
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: rgb(68, 68, 68);
+}
+
+.submenu {
+	display: none;
+}
+
+.submenu-active .submenu {
+	display: block;
+}
+
+.has-submenu i {
+	font-size: 12px;
+}
+
+.has-submenu > a::after {
+	font-size: 12px;
+	line-height: 16px;
+	font-weight: 900;
+	content: "⬇";
+	color: lightblue;
+	padding-left: 5px;
+}
+
+.subitem a {
+	padding-top: 10px;
+	padding-right: 15px;
+	padding-bottom: 10px;
+	padding-left: 15px;
+}
+
+.submenu-active {
+	background-color: lightblue;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+	border-bottom-right-radius: 3px;
+	border-bottom-left-radius: 3px;
+}
+
+.testimonial-1.testimonial-section-1-title {
+	text-align: center;
+	font-size: 36px;
+	font-weight: 600;
+	padding-top: 10px;
+	padding-right: 0px;
+	padding-bottom: 10px;
+	padding-left: 0px;
+}
+
+.fw-bold {
+	font-weight: 700;
+}
+
+.is-block.text-grey {
+	color: rgb(116, 116, 116);
+}
+
+.title.name {
+	font-size: 23px;
+	padding-top: 10px;
+	padding-right: 0px;
+	padding-bottom: 10px;
+	padding-left: 0px;
+}
+
+.testimonials-1 {
+	padding-top: 15px;
+	padding-right: 0px;
+	padding-bottom: 15px;
+	padding-left: 0px;
+}
+
+.rounded-card {
+	border-top-left-radius: 20px;
+	border-top-right-radius: 20px;
+	border-bottom-right-radius: 20px;
+	border-bottom-left-radius: 20px;
+}
+
+.card-content {
+	align-self: center;
+	float: left;
+}
+
+.section-content-left.section-content-left-title {
+	font-size: 36px;
+	font-weight: 600;
+	padding-top: 10px;
+	padding-right: 0px;
+	padding-bottom: 10px;
+	padding-left: 0px;
+}
+
+.featured-svg {
+	height: 400px;
+}
+
+#i15nc {
+	padding: 10px;
+}
+
+#docs-internal-guid-135e3b59-7fff-08c9-1e22-029512581eab {
+	font-weight: normal;
+}
+
+#iptkm {
+	line-height: 1.38;
+	margin-top: 0pt;
+	margin-bottom: 0pt;
+}
+
+#id813 {
+	font-size: 15px;
+	font-family: Arial;
+	color: rgb(0, 0, 0);
+	background-color: transparent;
+	font-weight: 400;
+	font-style: normal;
+	font-variant-numeric: normal;
+	font-variant-east-asian: normal;
+	vertical-align: baseline;
+	white-space: pre-wrap;
+}
+
+#ihu8q {
+	line-height: 1.38;
+	margin-top: 0pt;
+	margin-bottom: 0pt;
+}
+
+#i7h1i {
+	font-size: 15px;
+	font-family: Arial, Helvetica, sans-serif;
+	color: rgb(0, 0, 0);
+	background-color: transparent;
+	font-weight: 400;
+	font-style: normal;
+	font-variant-numeric: normal;
+	font-variant-east-asian: normal;
+	vertical-align: baseline;
+	white-space: pre-wrap;
+}
+
+@media (min-width: 700px) {
+	.menu {
+		justify-content: center;
+	}
+
+	.logo {
+		flex-grow: 1;
+		flex-shrink: 1;
+		flex-basis: 0%;
+	}
+
+	.item.button {
+		width: auto;
+		order: 1;
+		display: block;
+	}
+
+	.toggle {
+		flex-grow: 1;
+		flex-shrink: 1;
+		flex-basis: 0%;
+		text-align: right;
+		order: 2;
+	}
+
+	.menu li.button a {
+		padding-top: 10px;
+		padding-right: 15px;
+		padding-bottom: 10px;
+		padding-left: 15px;
+		margin-top: 5px;
+		margin-right: 0px;
+		margin-bottom: 5px;
+		margin-left: 0px;
+	}
+
+	.button a {
+		background-image: initial;
+		background-position-x: initial;
+		background-position-y: initial;
+		background-size: initial;
+		background-repeat-x: initial;
+		background-repeat-y: initial;
+		background-attachment: initial;
+		background-origin: initial;
+		background-clip: initial;
+		background-color: rgb(0, 128, 255);
+		border-top-width: 1px;
+		border-right-width: 1px;
+		border-bottom-width: 1px;
+		border-left-width: 1px;
+		border-top-style: solid;
+		border-right-style: solid;
+		border-bottom-style: solid;
+		border-left-style: solid;
+		border-top-color: royalblue;
+		border-right-color: royalblue;
+		border-bottom-color: royalblue;
+		border-left-color: royalblue;
+		border-image-source: initial;
+		border-image-slice: initial;
+		border-image-width: initial;
+		border-image-outset: initial;
+		border-image-repeat: initial;
+	}
+
+	.button.secondary {
+		border-top-width: 0px;
+		border-right-width: 0px;
+		border-bottom-width: 0px;
+		border-left-width: 0px;
+		border-top-style: initial;
+		border-right-style: initial;
+		border-bottom-style: initial;
+		border-left-style: initial;
+		border-top-color: initial;
+		border-right-color: initial;
+		border-bottom-color: initial;
+		border-left-color: initial;
+		border-image-source: initial;
+		border-image-slice: initial;
+		border-image-width: initial;
+		border-image-outset: initial;
+		border-image-repeat: initial;
+	}
+
+	.button.secondary a {
+		background-image: initial;
+		background-position-x: initial;
+		background-position-y: initial;
+		background-size: initial;
+		background-repeat-x: initial;
+		background-repeat-y: initial;
+		background-attachment: initial;
+		background-origin: initial;
+		background-clip: initial;
+		background-color: transparent;
+		border-top-width: 1px;
+		border-right-width: 1px;
+		border-bottom-width: 1px;
+		border-left-width: 1px;
+		border-top-style: solid;
+		border-right-style: solid;
+		border-bottom-style: solid;
+		border-left-style: solid;
+		border-top-color: rgb(0, 128, 255);
+		border-right-color: rgb(0, 128, 255);
+		border-bottom-color: rgb(0, 128, 255);
+		border-left-color: rgb(0, 128, 255);
+		border-image-source: initial;
+		border-image-slice: initial;
+		border-image-width: initial;
+		border-image-outset: initial;
+		border-image-repeat: initial;
+	}
+
+	.button a:hover {
+		text-decoration-line: none;
+		text-decoration-thickness: initial;
+		text-decoration-style: initial;
+		text-decoration-color: initial;
+	}
+
+	.button:not(.secondary) a:hover {
+		background-image: initial;
+		background-position-x: initial;
+		background-position-y: initial;
+		background-size: initial;
+		background-repeat-x: initial;
+		background-repeat-y: initial;
+		background-attachment: initial;
+		background-origin: initial;
+		background-clip: initial;
+		background-color: royalblue;
+		border-top-color: darkblue;
+		border-right-color: darkblue;
+		border-bottom-color: darkblue;
+		border-left-color: darkblue;
+	}
+}
+
+@media (min-width: 960px) {
+	.menu {
+		align-items: flex-start;
+		flex-wrap: nowrap;
+		background-image: none;
+		background-position-x: initial;
+		background-position-y: initial;
+		background-size: initial;
+		background-repeat-x: initial;
+		background-repeat-y: initial;
+		background-attachment: initial;
+		background-origin: initial;
+		background-clip: initial;
+		background-color: initial;
+	}
+
+	.logo {
+		order: 0;
+	}
+
+	.item {
+		order: 1;
+		position: relative;
+		display: block;
+		width: auto;
+	}
+
+	.button {
+		order: 2;
+	}
+
+	.submenu-active .submenu {
+		display: block;
+		position: absolute;
+		left: 0px;
+		top: 68px;
+		background-image: initial;
+		background-position-x: initial;
+		background-position-y: initial;
+		background-size: initial;
+		background-repeat-x: initial;
+		background-repeat-y: initial;
+		background-attachment: initial;
+		background-origin: initial;
+		background-clip: initial;
+		background-color: lightblue;
+	}
+
+	.toggle {
+		display: none;
+	}
+
+	.submenu-active {
+		border-top-left-radius: 0px;
+		border-top-right-radius: 0px;
+		border-bottom-right-radius: 0px;
+		border-bottom-left-radius: 0px;
+	}
+}
