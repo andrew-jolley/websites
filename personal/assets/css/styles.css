@@ -1,25 +1,10 @@
-body {
-	background-color: whitesmoke;
-	font-family: 'Roboto', sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@100;200;300;400;500;600;700;800;900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+*{
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
 }
 
-h1 {
-	color: #8C4100;
-	text-transform: none;
-}
-
-.txt:hover {
-    text-decoration: underline;
-}
-
-#im7r7-2 {
-	text-align: right;
-}
-
-#imlct {
-	color: #d97016;
-}
-
-#inrsl {
-	color: #d97016;
+.blog-body{
+  font-family: 'Lora', serif;!important
 }
