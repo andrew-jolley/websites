@@ -1,0 +1,16 @@
+Latest_Version: 2.4.0
+Download_Link_Mac: https://github.com/andrew-jolley/lecture-logger/releases/download/v2.4.0/LectureLogger-2.4.0.dmg
+Download_Link_Win: https://github.com/andrew-jolley/lecture-logger/releases/download/v2.4.0/LectureLogger-2.4.0.exe
+Release_Notes:
+🚀 New Features:
+• Automatic update checking
+• Enhanced file browser with validation
+• Improved dark mode support
+
+🐛 Bug Fixes:
+• Fixed settings modal issues
+• Improved error handling
+
+🔧 Improvements:
+• Better user experience
+• More robust logging system
