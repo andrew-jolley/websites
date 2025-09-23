@@ -1,7 +1,7 @@
 // ===== UI VERSION IDENTIFIER =====
 // This constant identifies the version of this UI file
 // It should be updated whenever this file is modified for OTA updates
-const THIS_UI_VERSION = '1.3.0';
+const THIS_UI_VERSION = '1.4.0';
 // ===================================
 
 // Excel functionality removed - keeping for UI compatibility
@@ -28,6 +28,23 @@ const currentVersion = packageJson.version;
 
 // Release notes
 const releaseNotes = {
+    "2.5.0": {
+        title: "Revolutionary UI OTA Update System & Enhanced User Experience",
+        notes: [
+          "🎨 **NEW: Over-The-Air UI Updates** - Interface automatically updates without reinstalling the app",
+          "📱 **Self-Identifying UI System** - Seamless version tracking with embedded UI version constants",
+          "🔄 **Automatic Update Checking** - Intelligent startup scanning for both app and UI updates",
+          "💾 **Smart Caching System** - Local UI cache with automatic download and version management",
+          "🔔 **Subtle Refresh Notifications** - Non-intrusive update prompts with one-click app restart",
+          "🎯 **Enhanced About Modal** - Larger title with comprehensive acknowledgements and system info",
+          "📋 **Improved Release Notes** - All versions displayed with newest first, older in collapsible accordion",
+          "🛠️ **Advanced Developer Tools** - Complete UI management with cache clearing and update testing",
+          "⚡ **Startup Auto-Updates** - Configurable automatic UI update checking on app launch",
+          "🎪 **Consistent UI Versioning** - HTML meta tags and JavaScript constants ensure version integrity",
+          "🔧 **Robust Error Handling** - Graceful fallbacks when GitHub CDN or cache operations fail",
+          "✨ **Enhanced Visual Feedback** - Improved success/error alerts with better styling and timing"
+        ]
+    },
     "2.4.1": {
         title: "Minor Bug Fixes & Improvements",
         notes: [
@@ -1514,6 +1531,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const errorDiv = document.getElementById('filePathError');
     this.classList.remove('is-invalid', 'is-valid');
     errorDiv.style.display = 'none';
+  });
+  
+  // Help button to open GitHub issues page
+  document.getElementById('helpBtn').addEventListener('click', function(event) {
+    event.stopPropagation(); // Prevent header click counting
+    logBasic('info', 'Help button clicked');
+    
+    // Open GitHub issues page in external browser
+    const { shell } = require('electron');
+    shell.openExternal('https://github.com/andrew-jolley/lecture-logger/issues/new');
   });
   
   // Info button to show About modal - moved inside DOMContentLoaded
