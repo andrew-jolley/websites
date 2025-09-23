@@ -1,3 +1,9 @@
+// ===== UI VERSION IDENTIFIER =====
+// This constant identifies the version of this UI file
+// It should be updated whenever this file is modified for OTA updates
+const THIS_UI_VERSION = '1.3.0';
+// ===================================
+
 // Excel functionality removed - keeping for UI compatibility
 // const Excel = require('exceljs');
 const fs = require('fs');
@@ -199,7 +205,6 @@ const UPDATE_CHECK_URL = 'https://raw.githubusercontent.com/andrew-jolley/websit
 const UI_VERSION_URL = 'https://raw.githubusercontent.com/andrew-jolley/websites/refs/heads/main/ui-version.txt';
 const UI_FILES_BASE_URL = 'https://raw.githubusercontent.com/andrew-jolley/websites/refs/heads/main/ui/';
 const LOCAL_UI_CACHE_DIR = path.join(os.homedir(), 'Documents', 'LectureLogger-Cache');
-const CURRENT_UI_VERSION = '1.0.0'; // Current bundled UI version
 
 // Update checking function
 async function checkForUpdates(manualCheck = false, useTestVersion = false) {
@@ -280,17 +285,30 @@ async function checkForUpdates(manualCheck = false, useTestVersion = false) {
 
 // Version comparison function
 function isNewerVersion(latest, current) {
+  console.log('isNewerVersion called with:', { latest, current });
+  
   const latestParts = latest.split('.').map(Number);
   const currentParts = current.split('.').map(Number);
+  
+  console.log('Version parts:', { latestParts, currentParts });
   
   for (let i = 0; i < Math.max(latestParts.length, currentParts.length); i++) {
     const latestPart = latestParts[i] || 0;
     const currentPart = currentParts[i] || 0;
     
-    if (latestPart > currentPart) return true;
-    if (latestPart < currentPart) return false;
+    console.log(`Comparing part ${i}: latest=${latestPart}, current=${currentPart}`);
+    
+    if (latestPart > currentPart) {
+      console.log('Latest is newer - returning true');
+      return true;
+    }
+    if (latestPart < currentPart) {
+      console.log('Current is newer - returning false');
+      return false;
+    }
   }
   
+  console.log('Versions are equal - returning false');
   return false;
 }
 
@@ -303,40 +321,47 @@ async function checkUIVersion() {
     if (!fs.existsSync(LOCAL_UI_CACHE_DIR)) {
       fs.mkdirSync(LOCAL_UI_CACHE_DIR, { recursive: true });
     }
-    
+
     // Check current UI version
     const response = await fetch(UI_VERSION_URL);
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
     }
-    
+
     const latestUIVersion = (await response.text()).trim();
     const currentUIVersion = getCurrentUIVersion();
-    
+
     logVerbose('info', 'UI version check complete', { 
       current: currentUIVersion, 
       latest: latestUIVersion 
     });
-    
+
     if (isNewerVersion(latestUIVersion, currentUIVersion)) {
       logBasic('info', 'New UI version available', { 
         current: currentUIVersion, 
         latest: latestUIVersion 
       });
       
-      await downloadUIFiles(latestUIVersion);
-      return { updated: true, version: latestUIVersion };
+      try {
+        await downloadUIFiles(latestUIVersion);
+        return { updated: true, version: latestUIVersion };
+      } catch (downloadError) {
+        logBasic('warn', 'UI files download failed', { error: downloadError.message });
+        return { 
+          updated: false, 
+          version: currentUIVersion, 
+          error: `Update available (v${latestUIVersion}) but download failed: ${downloadError.message}` 
+        };
+      }
     }
-    
+
     return { updated: false, version: currentUIVersion };
     
   } catch (error) {
     logBasic('warn', 'UI version check failed, using cached version', { error: error.message });
     return { updated: false, version: getCurrentUIVersion(), error: error.message };
   }
-}
-
-// Download and cache UI files
+}// Download and cache UI files
 async function downloadUIFiles(version) {
   try {
     const filesToDownload = [
@@ -384,16 +409,21 @@ async function downloadUIFiles(version) {
 
 // Get current UI version (from cache or bundled)
 function getCurrentUIVersion() {
-  try {
-    const versionFilePath = path.join(LOCAL_UI_CACHE_DIR, 'ui-version.txt');
-    if (fs.existsSync(versionFilePath)) {
-      return fs.readFileSync(versionFilePath, 'utf8').trim();
-    }
-  } catch (error) {
-    logVerbose('warn', 'Could not read cached UI version', { error: error.message });
+  // Return the version constant from this running UI file
+  // This is the most reliable way to know what version is actually running
+  return THIS_UI_VERSION;
+}
+
+function verifyUIVersionConsistency() {
+  // Verify that HTML and JS versions match
+  const htmlVersion = document.querySelector('meta[name="ui-version"]')?.content;
+  if (htmlVersion && htmlVersion !== THIS_UI_VERSION) {
+    logBasic('warn', 'UI version mismatch detected', { 
+      jsVersion: THIS_UI_VERSION, 
+      htmlVersion: htmlVersion 
+    });
   }
-  
-  return CURRENT_UI_VERSION; // Fallback to bundled version
+  return htmlVersion === THIS_UI_VERSION;
 }
 
 // Load UI files (cached or bundled)
@@ -406,7 +436,7 @@ function loadUIFiles() {
     if (fs.existsSync(cachedIndexPath) && fs.existsSync(cachedRendererPath)) {
       const currentUIVersion = getCurrentUIVersion();
       
-      if (isNewerVersion(currentUIVersion, CURRENT_UI_VERSION)) {
+      if (isNewerVersion(currentUIVersion, THIS_UI_VERSION)) {
         logBasic('info', 'Loading cached UI files', { version: currentUIVersion });
         
         // Note: In Electron, we can't dynamically replace the loaded HTML/JS
@@ -421,10 +451,10 @@ function loadUIFiles() {
       }
     }
     
-    logVerbose('info', 'Using bundled UI files', { version: CURRENT_UI_VERSION });
+    logVerbose('info', 'Using bundled UI files', { version: THIS_UI_VERSION });
     return {
       hasUpdate: false,
-      version: CURRENT_UI_VERSION,
+      version: THIS_UI_VERSION,
       message: 'Using bundled UI files'
     };
     
@@ -432,7 +462,7 @@ function loadUIFiles() {
     logBasic('error', 'Error loading UI files', { error: error.message });
     return {
       hasUpdate: false,
-      version: CURRENT_UI_VERSION,
+      version: THIS_UI_VERSION,
       message: 'Using bundled UI files (fallback)'
     };
   }
@@ -789,6 +819,107 @@ async function fetchGistDebugInfo() {
     
     logBasic('error', 'Failed to fetch GitHub debug info', { error: error.message });
   }
+}
+
+// Debug function to fetch and display UI System information
+async function fetchUIDebugInfo() {
+  const debugContent = document.getElementById('uiDebugContent');
+  const cacheStatus = document.getElementById('uiCacheStatus');
+  const rawDataContent = document.getElementById('uiRawData');
+  
+  if (!debugContent || !cacheStatus || !rawDataContent) {
+    console.error('UI Debug elements not found');
+    return;
+  }
+  
+  const timestamp = new Date().toLocaleString();
+  let debugInfo = `=== UI System Debug - ${timestamp} ===\n\n`;
+  
+  try {
+    debugInfo += '🎨 Checking UI version...\n';
+    debugInfo += `URL: ${UI_VERSION_URL}\n`;
+    
+    const response = await fetch(UI_VERSION_URL);
+    debugInfo += `Status: ${response.status} ${response.statusText}\n`;
+    debugInfo += `Headers: ${JSON.stringify(Object.fromEntries(response.headers.entries()), null, 2)}\n`;
+    
+    if (response.ok) {
+      const uiVersionText = await response.text();
+      debugInfo += `✅ Response received: "${uiVersionText.trim()}"\n`;
+      debugInfo += `📊 Current UI version: ${getCurrentUIVersion()}\n`;
+      debugInfo += `📊 Bundled UI version: ${THIS_UI_VERSION}\n`;
+      debugInfo += `📊 Is newer: ${isNewerVersion(uiVersionText.trim(), getCurrentUIVersion())}\n\n`;
+      
+      rawDataContent.textContent = uiVersionText;
+    } else {
+      debugInfo += `❌ Failed to fetch UI version\n\n`;
+      rawDataContent.textContent = 'No data received';
+    }
+    
+    // Test UI file URLs
+    debugInfo += '🧪 Testing UI file endpoints...\n';
+    
+    const uiFiles = ['index.html', 'renderer.js'];
+    
+    for (const file of uiFiles) {
+      try {
+        const fileUrl = `${UI_FILES_BASE_URL}${file}`;
+        debugInfo += `\n📄 Testing: ${file}\n`;
+        debugInfo += `   URL: ${fileUrl}\n`;
+        const testResponse = await fetch(fileUrl, { method: 'HEAD' });
+        debugInfo += `   Status: ${testResponse.status} ${testResponse.statusText}\n`;
+        debugInfo += `   Accessible: ${testResponse.ok ? '✅ Yes' : '❌ No'}\n`;
+        if (testResponse.ok) {
+          const contentLength = testResponse.headers.get('content-length');
+          if (contentLength) {
+            debugInfo += `   Size: ${(parseInt(contentLength) / 1024).toFixed(1)} KB\n`;
+          }
+        }
+      } catch (error) {
+        debugInfo += `   Error: ${error.message}\n`;
+      }
+    }
+    
+  } catch (error) {
+    debugInfo += `❌ Error: ${error.message}\n`;
+    debugInfo += `Stack: ${error.stack}\n`;
+    rawDataContent.textContent = `Error: ${error.message}`;
+  }
+  
+  // Check local cache status
+  let cacheInfo = `=== Local Cache Status ===\n\n`;
+  cacheInfo += `📁 Cache Directory: ${LOCAL_UI_CACHE_DIR}\n`;
+  
+  try {
+    if (fs.existsSync(LOCAL_UI_CACHE_DIR)) {
+      cacheInfo += `✅ Cache directory exists\n`;
+      
+      const versionFile = path.join(LOCAL_UI_CACHE_DIR, 'ui-version.txt');
+      if (fs.existsSync(versionFile)) {
+        const cachedVersion = fs.readFileSync(versionFile, 'utf8').trim();
+        cacheInfo += `📋 Cached version: ${cachedVersion}\n`;
+      } else {
+        cacheInfo += `❌ No cached version file\n`;
+      }
+      
+      const files = fs.readdirSync(LOCAL_UI_CACHE_DIR);
+      cacheInfo += `📄 Cached files: ${files.join(', ')}\n`;
+      
+      for (const file of files) {
+        const filePath = path.join(LOCAL_UI_CACHE_DIR, file);
+        const stats = fs.statSync(filePath);
+        cacheInfo += `   ${file}: ${(stats.size / 1024).toFixed(1)} KB, modified: ${stats.mtime.toLocaleString()}\n`;
+      }
+    } else {
+      cacheInfo += `❌ Cache directory does not exist\n`;
+    }
+  } catch (error) {
+    cacheInfo += `❌ Cache check error: ${error.message}\n`;
+  }
+  
+  debugContent.textContent = debugInfo;
+  cacheStatus.textContent = cacheInfo;
+  logVerbose('info', 'UI debug info refreshed');
 }
 
 // Ensure Documents folder exists
@@ -1195,6 +1326,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const uiStatus = loadUIFiles();
   logVerbose('info', 'UI system initialized', uiStatus);
   
+  // Verify UI version consistency
+  verifyUIVersionConsistency();
+  
   // Check for UI updates in background
   if (appSettings.autoUpdateCheck) {
     setTimeout(async () => {
@@ -1203,11 +1337,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (uiUpdateResult.updated) {
           logBasic('info', 'UI updated in background', uiUpdateResult);
           
-          // Could show notification about UI update available after restart
-          showSuccessAlert(
-            'UI Updated!',
-            `New interface version ${uiUpdateResult.version} cached. Restart to apply changes.`
-          );
+          // Show subtle refresh notification instead of alert
+          showUIUpdateNotification(uiUpdateResult.version);
         }
       } catch (error) {
         logVerbose('warn', 'Background UI update check failed', { error: error.message });
@@ -1571,6 +1702,25 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('devPlatform').textContent = navigator.platform;
     document.getElementById('devUserAgent').textContent = navigator.userAgent;
     
+    // Populate UI version and cache status
+    const currentUIVersion = getCurrentUIVersion();
+    const isConsistent = verifyUIVersionConsistency();
+    document.getElementById('devUIVersion').textContent = `v${currentUIVersion}`;
+    
+    // Color code the version badge based on consistency
+    const versionBadge = document.getElementById('devUIVersion');
+    if (isConsistent) {
+      versionBadge.className = 'badge bg-success';
+    } else {
+      versionBadge.className = 'badge bg-warning';
+      versionBadge.title = 'Version mismatch detected between HTML and JS';
+    }
+    
+    const cacheStatus = fs.existsSync(LOCAL_UI_CACHE_DIR) ? 
+      (fs.existsSync(path.join(LOCAL_UI_CACHE_DIR, 'index.html')) ? 'Cached UI Available' : 'Cache Dir Only') : 
+      'No Cache';
+    document.getElementById('devCacheStatus').textContent = cacheStatus;
+    
     // Populate test version if set
     document.getElementById('devTestVersion').value = appSettings.testVersion || '';
     
@@ -1666,54 +1816,128 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 300);
   });
   
-  // UI Update Management event handlers
-  document.getElementById('checkUIUpdateBtn').addEventListener('click', async function() {
-    this.disabled = true;
-    this.innerHTML = '⏳ Checking...';
-    
-    const statusDiv = document.getElementById('uiUpdateStatus');
-    statusDiv.innerHTML = 'Checking for UI updates...';
-    
-    try {
-      const result = await checkUIVersion();
+  
+  // Simple UI Management buttons
+  const checkUIUpdatesBtn = document.getElementById('checkUIUpdatesBtn');
+  const clearUICacheBtn = document.getElementById('clearUICacheBtn');
+  
+  if (checkUIUpdatesBtn) {
+    checkUIUpdatesBtn.addEventListener('click', async function() {
+      console.log('Check UI Updates button clicked');
       
-      if (result.updated) {
-        statusDiv.innerHTML = `<span class="text-success">✅ UI updated to version ${result.version}! Restart to apply.</span>`;
-        showSuccessAlert('UI Updated!', `Version ${result.version} cached. Restart app to use new interface.`);
-      } else {
-        statusDiv.innerHTML = `<span class="text-info">ℹ️ UI is up to date (v${result.version})</span>`;
-      }
-    } catch (error) {
-      statusDiv.innerHTML = `<span class="text-danger">❌ Failed to check UI updates: ${error.message}</span>`;
-    } finally {
-      this.disabled = false;
-      this.innerHTML = '🔄 Check UI Updates';
-    }
-  });
-  
-  document.getElementById('clearUICacheBtn').addEventListener('click', function() {
-    try {
-      if (fs.existsSync(LOCAL_UI_CACHE_DIR)) {
-        // Remove all cached files
-        const files = fs.readdirSync(LOCAL_UI_CACHE_DIR);
-        files.forEach(file => {
-          fs.unlinkSync(path.join(LOCAL_UI_CACHE_DIR, file));
-        });
-        fs.rmdirSync(LOCAL_UI_CACHE_DIR);
+      const statusDiv = document.getElementById('uiStatusDisplay');
+      const originalText = this.innerHTML;
+      
+      try {
+        this.disabled = true;
+        this.innerHTML = '⏳ Checking...';
+        if (statusDiv) statusDiv.innerHTML = 'Checking for UI updates...';
         
-        const statusDiv = document.getElementById('uiUpdateStatus');
-        statusDiv.innerHTML = '<span class="text-success">✅ UI cache cleared successfully</span>';
-        showSuccessAlert('Cache Cleared', 'UI cache removed. App will use bundled version.');
-      } else {
-        const statusDiv = document.getElementById('uiUpdateStatus');
-        statusDiv.innerHTML = '<span class="text-info">ℹ️ No UI cache to clear</span>';
+        // Debug: Show what versions we're comparing
+        const currentUIVersion = getCurrentUIVersion();
+        console.log('Current UI Version:', currentUIVersion);
+        
+        // Fetch remote version manually to debug
+        const response = await fetch(UI_VERSION_URL);
+        const latestUIVersion = (await response.text()).trim();
+        console.log('Latest UI Version from remote:', latestUIVersion);
+        
+        const isNewer = isNewerVersion(latestUIVersion, currentUIVersion);
+        console.log('Is newer version available?', isNewer);
+        console.log('Comparison: latest =', latestUIVersion, ', current =', currentUIVersion);
+        
+        const result = await checkUIVersion();
+        
+        if (result.updated) {
+          if (statusDiv) statusDiv.innerHTML = `<span class="text-success">✅ Updated to v${result.version}! Restart to apply.</span>`;
+          // Show subtle refresh notification
+          showUIUpdateNotification(result.version);
+        } else if (result.error) {
+          if (statusDiv) statusDiv.innerHTML = `<span class="text-warning">⚠️ ${result.error}</span>`;
+        } else {
+          if (statusDiv) statusDiv.innerHTML = `<span class="text-info">ℹ️ UI is up to date (local: v${currentUIVersion}, remote: v${latestUIVersion})</span>`;
+        }
+      } catch (error) {
+        console.error('Error checking UI updates:', error);
+        if (statusDiv) statusDiv.innerHTML = `<span class="text-danger">❌ Error: ${error.message}</span>`;
+      } finally {
+        this.disabled = false;
+        this.innerHTML = originalText;
       }
-    } catch (error) {
-      const statusDiv = document.getElementById('uiUpdateStatus');
-      statusDiv.innerHTML = `<span class="text-danger">❌ Failed to clear cache: ${error.message}</span>`;
-    }
-  });
+    });
+  }
   
+  if (clearUICacheBtn) {
+    clearUICacheBtn.addEventListener('click', function() {
+      console.log('Clear UI Cache button clicked');
+      
+      const statusDiv = document.getElementById('uiStatusDisplay');
+      
+      try {
+        if (fs.existsSync(LOCAL_UI_CACHE_DIR)) {
+          const files = fs.readdirSync(LOCAL_UI_CACHE_DIR);
+          files.forEach(file => {
+            fs.unlinkSync(path.join(LOCAL_UI_CACHE_DIR, file));
+          });
+          fs.rmdirSync(LOCAL_UI_CACHE_DIR);
+          if (statusDiv) statusDiv.innerHTML = '<span class="text-success">✅ UI cache cleared</span>';
+        } else {
+          if (statusDiv) statusDiv.innerHTML = '<span class="text-info">ℹ️ No cache to clear</span>';
+        }
+      } catch (error) {
+        if (statusDiv) statusDiv.innerHTML = `<span class="text-danger">❌ Error: ${error.message}</span>`;
+      }
+    });
+  }
+
+  // UI Update notification functions
+  function showUIUpdateNotification(version) {
+    const notification = document.getElementById('uiUpdateNotification');
+    if (notification) {
+      notification.style.display = 'block';
+      notification.classList.add('show');
+      
+      // Auto-hide after 10 seconds if user doesn't interact
+      setTimeout(() => {
+        if (notification.classList.contains('show')) {
+          notification.classList.remove('show');
+          setTimeout(() => {
+            notification.style.display = 'none';
+          }, 150);
+        }
+      }, 10000);
+    }
+  }
+
+  // Refresh Now button handler
+  const refreshNowBtn = document.getElementById('refreshNowBtn');
+  if (refreshNowBtn) {
+    refreshNowBtn.addEventListener('click', function() {
+      // Close the notification first
+      const notification = document.getElementById('uiUpdateNotification');
+      if (notification) {
+        notification.classList.remove('show');
+      }
+      
+      // Restart the Electron app to load cached UI files
+      setTimeout(() => {
+        try {
+          const { app } = require('electron').remote || require('@electron/remote');
+          if (app) {
+            app.relaunch();
+            app.exit();
+          } else {
+            // Fallback: just reload if remote is not available
+            location.reload();
+          }
+        } catch (error) {
+          console.warn('Could not restart app, falling back to reload:', error);
+          location.reload();
+        }
+      }, 200);
+    });
+  }
+
   // Update modal event handlers
   document.getElementById('skipUpdateBtn').addEventListener('click', function() {
     const updateModal = bootstrap.Modal.getInstance(document.getElementById('updateModal'));
