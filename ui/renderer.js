@@ -1,7 +1,7 @@
 // ===== UI VERSION IDENTIFIER =====
 // This constant identifies the version of this UI file
 // It should be updated whenever this file is modified for OTA updates
-const THIS_UI_VERSION = '1.6.0';
+const THIS_UI_VERSION = '1.6.1';
 // ===================================
 
 // Excel functionality removed - keeping for UI compatibility
@@ -9,7 +9,7 @@ const THIS_UI_VERSION = '1.6.0';
 const fs = require('fs');
 const path = require('path');
 const os = require('os'); // For cross-platform home directory
-const { ipcRenderer } = require('electron');
+const { ipcRenderer, shell } = require('electron');
 
 // Settings management
 let appSettings = {
@@ -18,6 +18,7 @@ let appSettings = {
   darkMode: false,
   verboseLogging: false,
   autoUpdateCheck: true,
+  enableOTA: true, // Enable OTA UI updates
   testVersion: '' // For testing update system
 };
 
@@ -332,6 +333,17 @@ function isNewerVersion(latest, current) {
 // UI Version checking and caching system
 async function checkUIVersion() {
   try {
+    // In development mode or if OTA is disabled, skip OTA updates and use bundled files
+    if (process.env.NODE_ENV === 'development') {
+      logBasic('info', 'Development mode detected - skipping UI OTA check');
+      return;
+    }
+    
+    if (!appSettings.enableOTA) {
+      logBasic('info', 'OTA updates disabled in settings - using bundled UI files');
+      return;
+    }
+    
     logVerbose('info', 'Checking for UI updates');
     
     // Ensure cache directory exists
@@ -1150,6 +1162,8 @@ function loadSettings() {
         // Apply theme
         if (appSettings.darkMode) {
           document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.removeAttribute('data-theme');
         }
         
         // Only log if verbose logging is enabled
@@ -1170,7 +1184,7 @@ function loadSettings() {
 }
 
 // Save settings to localStorage
-function saveSettings(excelPath, startingRow, darkMode, verboseLogging, autoUpdateCheck, testVersion = '') {
+function saveSettings(excelPath, startingRow, darkMode, verboseLogging, autoUpdateCheck, enableOTA, testVersion = '') {
   const wasVerboseLogging = appSettings.verboseLogging;
   
   appSettings = {
@@ -1179,6 +1193,7 @@ function saveSettings(excelPath, startingRow, darkMode, verboseLogging, autoUpda
     darkMode: darkMode,
     verboseLogging: verboseLogging,
     autoUpdateCheck: autoUpdateCheck,
+    enableOTA: enableOTA,
     testVersion: testVersion
   };
   
@@ -1355,8 +1370,9 @@ document.addEventListener('DOMContentLoaded', function() {
   // Verify UI version consistency
   verifyUIVersionConsistency();
   
-  // Check for UI updates in background
-  if (appSettings.autoUpdateCheck) {
+  // Check for UI updates in background (skip in development mode)
+  const isDevelopment = process.env.NODE_ENV === 'development';
+  if (appSettings.autoUpdateCheck && !isDevelopment) {
     setTimeout(async () => {
       try {
         const uiUpdateResult = await checkUIVersion();
@@ -1370,6 +1386,8 @@ document.addEventListener('DOMContentLoaded', function() {
         logVerbose('warn', 'Background UI update check failed', { error: error.message });
       }
     }, 3000); // Check after 3 seconds
+  } else if (isDevelopment) {
+    console.log('Development mode - skipping UI update checks');
   }
   // Only log if verbose logging is enabled (check after loading settings)
   
@@ -1458,6 +1476,8 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('darkModeToggle').checked = appSettings.darkMode || false;
     document.getElementById('verboseLogging').checked = appSettings.verboseLogging || false;
     document.getElementById('autoUpdateCheck').checked = appSettings.autoUpdateCheck !== false; // Default to true
+    document.getElementById('enableOTAToggle').checked = appSettings.enableOTA !== false; // Default to true
+    document.getElementById('enableOTAToggle').checked = appSettings.enableOTA !== false; // Default to true
     
     const settingsModal = new bootstrap.Modal(document.getElementById('settingsModal'));
     settingsModal.show();
@@ -1548,7 +1568,6 @@ document.addEventListener('DOMContentLoaded', function() {
     logBasic('info', 'Help button clicked');
     
     // Open GitHub issues page in external browser
-    const { shell } = require('electron');
     shell.openExternal('https://github.com/andrew-jolley/lecture-logger/issues/new');
   });
   
@@ -1678,6 +1697,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const darkMode = document.getElementById('darkModeToggle').checked;
     const verboseLogging = document.getElementById('verboseLogging').checked;
     const autoUpdateCheck = document.getElementById('autoUpdateCheck').checked;
+    const enableOTA = document.getElementById('enableOTAToggle').checked;
     const errorDiv = document.getElementById('filePathError');
     const pathInput = document.getElementById('excelPath');
     
@@ -1701,7 +1721,7 @@ document.addEventListener('DOMContentLoaded', function() {
     pathInput.classList.add('is-valid');
     
     if (excelPath && startingRow) {
-      saveSettings(excelPath, startingRow, darkMode, verboseLogging, autoUpdateCheck, appSettings.testVersion || '');
+      saveSettings(excelPath, startingRow, darkMode, verboseLogging, autoUpdateCheck, enableOTA, appSettings.testVersion || '');
       const settingsModal = bootstrap.Modal.getInstance(document.getElementById('settingsModal'));
       settingsModal.hide();
       
@@ -1864,6 +1884,13 @@ document.addEventListener('DOMContentLoaded', function() {
       const statusDiv = document.getElementById('uiStatusDisplay');
       const originalText = this.innerHTML;
       
+      // Check if in development mode
+      const isDevelopment = process.env.NODE_ENV === 'development';
+      if (isDevelopment) {
+        if (statusDiv) statusDiv.innerHTML = '<span class="text-warning">⚠️ Development mode - UI updates disabled</span>';
+        return;
+      }
+      
       try {
         this.disabled = true;
         this.innerHTML = '⏳ Checking...';
@@ -2007,7 +2034,6 @@ document.addEventListener('DOMContentLoaded', function() {
       logBasic('info', 'Starting update download', { platform: process.platform, url: downloadUrl });
       
       // Use Electron's shell to download and open
-      const { shell } = require('electron');
       await shell.openExternal(downloadUrl);
       
       // Close the modal and quit the app
