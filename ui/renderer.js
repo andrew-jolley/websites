@@ -1,7 +1,7 @@
 // ===== UI VERSION IDENTIFIER =====
 // This constant identifies the version of this UI file
 // It should be updated whenever this file is modified for OTA updates
-const THIS_UI_VERSION = '1.6.3';
+const THIS_UI_VERSION = '1.6.5';
 // ===================================
 
 // Excel functionality removed - keeping for UI compatibility
@@ -1259,14 +1259,29 @@ let pendingReleaseNotes = false;
 
 function checkVersionAndShowReleaseNotes() {
   const savedVersion = localStorage.getItem('lectureLoggerVersion');
+  const savedBuildNumber = localStorage.getItem('lectureLoggerBuildNumber');
+  const currentBuildNumber = packageJson.buildNumber;
+  
+  // Check if this is a binary update (app version or build number changed)
+  const isBinaryUpdate = savedVersion && savedBuildNumber && 
+    (savedVersion !== currentVersion || savedBuildNumber !== currentBuildNumber);
   
   // Only show release notes if this is truly a version change (not just missing localStorage)
   if (savedVersion && savedVersion !== currentVersion) {
     // Version has actually changed
     localStorage.setItem('lectureLoggerVersion', currentVersion);
+    localStorage.setItem('lectureLoggerBuildNumber', currentBuildNumber);
     
     // Mark that we need to show release notes
     pendingReleaseNotes = true;
+    
+    // If this is a binary update, show settings verification modal
+    if (isBinaryUpdate) {
+      setTimeout(() => {
+        showSettingsVerificationModal();
+      }, 1000);
+      return;
+    }
     
     // Only show immediately if settings aren't needed
     const savedSettings = localStorage.getItem('lectureLoggerSettings');
@@ -1293,6 +1308,51 @@ function checkVersionAndShowReleaseNotes() {
   } else if (!savedVersion) {
     // First run - just set version without showing release notes
     localStorage.setItem('lectureLoggerVersion', currentVersion);
+    localStorage.setItem('lectureLoggerBuildNumber', currentBuildNumber);
+  } else if (savedBuildNumber !== currentBuildNumber) {
+    // Only build number changed (not version) - still a binary update
+    localStorage.setItem('lectureLoggerBuildNumber', currentBuildNumber);
+    if (isBinaryUpdate) {
+      setTimeout(() => {
+        showSettingsVerificationModal();
+      }, 1000);
+    }
+  }
+}
+
+// Show settings verification modal after binary updates
+function showSettingsVerificationModal() {
+  try {
+    const modal = document.getElementById('settingsVerificationModal');
+    if (!modal) {
+      console.error('Settings verification modal not found');
+      return;
+    }
+
+    // Load current settings into the verification form
+    const verifyExcelPath = document.getElementById('verifyExcelPath');
+    const verifyStartingRow = document.getElementById('verifyStartingRow');
+    const verifyAutoUpdateCheck = document.getElementById('verifyAutoUpdateCheck');
+    const verifyEnableOTA = document.getElementById('verifyEnableOTA');
+    const verifyVerboseLogging = document.getElementById('verifyVerboseLogging');
+
+    if (verifyExcelPath) verifyExcelPath.value = appSettings.excelPath || '';
+    if (verifyStartingRow) verifyStartingRow.value = appSettings.startingRow || 125;
+    if (verifyAutoUpdateCheck) verifyAutoUpdateCheck.checked = appSettings.autoUpdateCheck !== false;
+    if (verifyEnableOTA) verifyEnableOTA.checked = appSettings.enableOTA !== false;
+    if (verifyVerboseLogging) verifyVerboseLogging.checked = appSettings.verboseLogging === true;
+
+    const settingsVerificationModal = new bootstrap.Modal(modal);
+    settingsVerificationModal.show();
+    
+    logBasic('info', 'Settings verification modal shown after binary update');
+  } catch (error) {
+    console.error('Error showing settings verification modal:', error);
+    // Fallback to regular release notes
+    if (pendingReleaseNotes) {
+      showReleaseNotes();
+      pendingReleaseNotes = false;
+    }
   }
 }
 
@@ -1502,22 +1562,48 @@ document.addEventListener('DOMContentLoaded', async function() {
   });
   
   // Dev button to trigger settings modal - moved inside DOMContentLoaded to ensure element exists
-  document.getElementById('devSettingsBtn').addEventListener('click', function(event) {
-    event.stopPropagation(); // Prevent header click counting
-    logBasic('info', 'Settings button clicked');
-    
-    // Populate current settings in the modal
-    document.getElementById('excelPath').value = appSettings.excelPath || '';
-    document.getElementById('startingRow').value = appSettings.startingRow || 125;
-    document.getElementById('verboseLogging').checked = appSettings.verboseLogging || false;
-    document.getElementById('autoUpdateCheck').checked = appSettings.autoUpdateCheck !== false; // Default to true
-    document.getElementById('enableOTAToggle').checked = appSettings.enableOTA !== false; // Default to true
-    
-    const settingsModal = new bootstrap.Modal(document.getElementById('settingsModal'));
-    settingsModal.show();
-    
-    logVerbose('info', 'Settings modal opened via dev button');
-  });
+  const devSettingsBtn = document.getElementById('devSettingsBtn');
+  if (devSettingsBtn) {
+    devSettingsBtn.addEventListener('click', function(event) {
+      event.stopPropagation(); // Prevent header click counting
+      logBasic('info', 'Settings button clicked');
+      
+      try {
+        // Populate current settings in the modal
+        const excelPathEl = document.getElementById('excelPath');
+        const startingRowEl = document.getElementById('startingRow');
+        const verboseLoggingEl = document.getElementById('verboseLogging');
+        const autoUpdateCheckEl = document.getElementById('autoUpdateCheck');
+        const enableOTAToggleEl = document.getElementById('enableOTAToggle');
+        
+        if (excelPathEl) excelPathEl.value = appSettings.excelPath || '';
+        if (startingRowEl) startingRowEl.value = appSettings.startingRow || 125;
+        if (verboseLoggingEl) verboseLoggingEl.checked = appSettings.verboseLogging || false;
+        if (autoUpdateCheckEl) autoUpdateCheckEl.checked = appSettings.autoUpdateCheck !== false; // Default to true
+        if (enableOTAToggleEl) enableOTAToggleEl.checked = appSettings.enableOTA !== false; // Default to true
+        
+        const settingsModalEl = document.getElementById('settingsModal');
+        if (settingsModalEl) {
+          if (typeof bootstrap !== 'undefined') {
+            const settingsModal = new bootstrap.Modal(settingsModalEl);
+            settingsModal.show();
+            logVerbose('info', 'Settings modal opened via dev button');
+          } else {
+            console.error('Bootstrap not loaded');
+            alert('Bootstrap library not loaded - cannot show modal');
+          }
+        } else {
+          console.error('Settings modal element not found');
+          alert('Settings modal not found in DOM');
+        }
+      } catch (error) {
+        console.error('Error opening settings modal:', error);
+        alert('Error opening settings: ' + error.message);
+      }
+    });
+  } else {
+    console.error('Dev settings button not found');
+  }
   
   // Initial setup file browser functionality
   document.getElementById('initialBrowseFileBtn').addEventListener('click', function() {
@@ -1606,63 +1692,81 @@ document.addEventListener('DOMContentLoaded', async function() {
   });
   
   // Info button to show About modal - moved inside DOMContentLoaded
-  document.getElementById('infoBtn').addEventListener('click', function(event) {
-    event.stopPropagation(); // Prevent header click counting
-    logBasic('info', 'Info button clicked');
-    
-    // Load version and build info from package.json
-    const buildDate = new Date().toLocaleDateString('en-GB');
-    const electronVersion = process.versions.electron;
-    const buildNumber = packageJson.buildNumber || 'dev';
-    const uiVersion = getCurrentUIVersion();
-    const uiStatus = loadUIFiles();
-    
-    // Update about modal with current versions
-    const aboutModal = new bootstrap.Modal(document.getElementById('aboutModal'));
-    
-    // Update version info in about modal
-    const versionInfo = document.querySelector('#aboutModal .modal-body');
-    if (versionInfo) {
-      // Update the HTML content with the previous larger style format plus acknowledgements
-      versionInfo.innerHTML = `
-        <div class="text-center mb-3">
-          <h4 class="text-primary">📚 Lecture Logger</h4>
-          <p class="text-muted">Version ${currentVersion} (${buildNumber})</p>
-          <p class="text-muted">UI Version: ${uiVersion} ${uiStatus.hasUpdate ? '(Updated - restart to apply)' : '(Current)'}</p>
-          <p class="text-muted">Electron ${electronVersion} • Built ${buildDate}</p>
-        </div>
-        <hr>
-        <p><strong>Lecture Logger</strong> helps you log and track your learning sessions.</p>
-        <hr>
-        <h6>🙏 Acknowledgements:</h6>
-        <ul>
-          <li><strong>Electron</strong> - Cross-platform desktop application framework</li>
-          <li><strong>Bootstrap</strong> - Responsive web design framework</li>
-          <li><strong>ExcelJS</strong> - JavaScript library for Excel file manipulation</li>
-          <li><strong>BCU</strong> - Birmingham City University for educational support</li>
-        </ul>
-        <hr>
-        <p><strong>Developer:</strong> ${packageJson.author}</p>
-        <p><strong>GitHub:</strong> <a href="#" onclick="require('electron').shell.openExternal('https://github.com/andrew-jolley/lecture-logger')">andrew-jolley/lecture-logger</a></p>
-      `;
-    }
-    
-    aboutModal.show();
-  });
+  const infoBtn = document.getElementById('infoBtn');
+  if (infoBtn) {
+    infoBtn.addEventListener('click', function(event) {
+      event.stopPropagation(); // Prevent header click counting
+      logBasic('info', 'Info button clicked');
+      
+      try {
+        // Load version and build info from package.json
+        const buildDate = new Date().toLocaleDateString('en-GB');
+        const electronVersion = process.versions.electron;
+        const buildNumber = packageJson.buildNumber || 'dev';
+        const uiVersion = getCurrentUIVersion();
+        const uiStatus = loadUIFiles();
+        
+        // Update about modal with current versions
+        const aboutModalEl = document.getElementById('aboutModal');
+        if (aboutModalEl) {
+          if (typeof bootstrap !== 'undefined') {
+            const aboutModal = new bootstrap.Modal(aboutModalEl);
+            
+            // Update version info in about modal
+            const versionInfo = document.querySelector('#aboutModal .modal-body');
+            if (versionInfo) {
+              // Update the HTML content with the previous larger style format plus acknowledgements
+              versionInfo.innerHTML = `
+                <div class="text-center mb-3">
+                  <h4 class="text-primary">📚 Lecture Logger</h4>
+                  <p class="text-muted">Version ${currentVersion} (${buildNumber})</p>
+                  <p class="text-muted">UI Version: ${uiVersion} ${uiStatus.hasUpdate ? '(Updated - restart to apply)' : '(Current)'}</p>
+                  <p class="text-muted">Electron ${electronVersion} • Built ${buildDate}</p>
+                </div>
+                <hr>
+                <div class="mb-3">
+                  <p class="mb-2"><strong>🎓 Acknowledgements:</strong></p>
+                  <p class="small text-muted mb-1">Built with Electron framework for cross-platform compatibility</p>
+                  <p class="small text-muted mb-1">Bootstrap for modern UI components and responsive design</p>
+                  <p class="small text-muted mb-1">ExcelJS library for spreadsheet integration functionality</p>
+                  <p class="small text-muted mb-0">GitHub for version control, hosting, and OTA update distribution</p>
+                </div>
+              `;
+            }
+            
+            aboutModal.show();
+            logVerbose('info', 'About modal opened via info button');
+          } else {
+            throw new Error('Bootstrap not loaded');
+          }
+        } else {
+          throw new Error('About modal element not found');
+        }
+      } catch (error) {
+        console.error('Error opening about modal:', error);
+        alert('Error opening About: ' + error.message);
+      }
+    });
+  } else {
+    console.error('Info button not found');
+  }
   
   // View Release Notes button in About modal - moved inside DOMContentLoaded
-  document.getElementById('viewReleaseNotesBtn').addEventListener('click', function() {
-    // Close the About modal first
-    const aboutModal = bootstrap.Modal.getInstance(document.getElementById('aboutModal'));
-    if (aboutModal) {
-      aboutModal.hide();
-    }
-    
-    // Show release notes after About modal closes
-    setTimeout(() => {
-      showReleaseNotes();
-    }, 300); // Wait for About modal to close
-  });
+  const viewReleaseNotesBtn = document.getElementById('viewReleaseNotesBtn');
+  if (viewReleaseNotesBtn) {
+    viewReleaseNotesBtn.addEventListener('click', function() {
+      // Close the About modal first
+      const aboutModal = bootstrap.Modal.getInstance(document.getElementById('aboutModal'));
+      if (aboutModal) {
+        aboutModal.hide();
+      }
+      
+      // Show release notes after About modal closes
+      setTimeout(() => {
+        showReleaseNotes();
+      }, 300); // Wait for About modal to close
+    });
+  }
   
   // Check for Updates button in About modal
   document.getElementById('checkUpdatesBtn').addEventListener('click', function() {
@@ -1755,8 +1859,20 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     if (excelPath && startingRow) {
       await saveSettings(excelPath, startingRow, verboseLogging, autoUpdateCheck, enableOTA, appSettings.testVersion || '');
-      const settingsModal = bootstrap.Modal.getInstance(document.getElementById('settingsModal'));
-      settingsModal.hide();
+      
+      // Close the modal - try multiple methods to ensure it closes
+      const modalEl = document.getElementById('settingsModal');
+      if (modalEl) {
+        // Try to get existing instance first
+        let modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) {
+          modal.hide();
+        } else {
+          // If no instance exists, create one and hide it immediately
+          modal = new bootstrap.Modal(modalEl);
+          modal.hide();
+        }
+      }
       
       // Ensure main window is fully interactive after modal closes
       setTimeout(() => {
@@ -2089,6 +2205,135 @@ document.addEventListener('DOMContentLoaded', async function() {
       downloadBtn.textContent = originalText;
     }
   });
+
+  // Initial Setup Modal handlers
+  const initialBrowseFileBtn = document.getElementById('initialBrowseFileBtn');
+  const initialFileInput = document.getElementById('initialFileInput');
+  const saveInitialSetup = document.getElementById('saveInitialSetup');
+
+  if (initialBrowseFileBtn && initialFileInput) {
+    initialBrowseFileBtn.addEventListener('click', () => {
+      initialFileInput.click();
+    });
+
+    initialFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file && file.name.endsWith('.xlsx')) {
+        document.getElementById('initialExcelPath').value = file.path;
+        document.getElementById('initialFilePathError').style.display = 'none';
+      } else if (file) {
+        document.getElementById('initialFilePathError').textContent = 'Please select a valid Excel (.xlsx) file.';
+        document.getElementById('initialFilePathError').style.display = 'block';
+      }
+    });
+  }
+
+  if (saveInitialSetup) {
+    saveInitialSetup.addEventListener('click', async () => {
+      try {
+        const excelPath = document.getElementById('initialExcelPath').value;
+        const startingRow = parseInt(document.getElementById('initialStartingRow').value) || 125;
+        const autoUpdateCheck = document.getElementById('initialAutoUpdateCheck').checked;
+        const enableOTA = document.getElementById('initialEnableOTA').checked;
+
+        if (!excelPath) {
+          document.getElementById('initialFilePathError').textContent = 'Please select an Excel file.';
+          document.getElementById('initialFilePathError').style.display = 'block';
+          return;
+        }
+
+        await saveSettings(excelPath, startingRow, false, autoUpdateCheck, enableOTA);
+        
+        // Close the modal - try multiple methods to ensure it closes
+        const modalEl = document.getElementById('initialSetupModal');
+        if (modalEl) {
+          // Try to get existing instance first
+          let modal = bootstrap.Modal.getInstance(modalEl);
+          if (modal) {
+            modal.hide();
+          } else {
+            // If no instance exists, create one and hide it immediately
+            modal = new bootstrap.Modal(modalEl);
+            modal.hide();
+          }
+        }
+
+        showSuccessAlert('Settings saved successfully!', 'You can change these settings anytime from the ⚙️ Settings menu.');
+        
+        // Show release notes if pending
+        if (pendingReleaseNotes) {
+          setTimeout(() => {
+            showReleaseNotes();
+            pendingReleaseNotes = false;
+          }, 500);
+        }
+      } catch (error) {
+        console.error('Error in initial setup:', error);
+        alert('Error saving initial settings: ' + error.message);
+      }
+    });
+  }
+
+  // Settings Verification Modal handlers
+  const verifyBrowseFileBtn = document.getElementById('verifyBrowseFileBtn');
+  const verifyFileInput = document.getElementById('verifyFileInput');
+  const confirmSettingsVerification = document.getElementById('confirmSettingsVerification');
+
+  if (verifyBrowseFileBtn && verifyFileInput) {
+    verifyBrowseFileBtn.addEventListener('click', () => {
+      verifyFileInput.click();
+    });
+
+    verifyFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file && file.name.endsWith('.xlsx')) {
+        document.getElementById('verifyExcelPath').value = file.path;
+      }
+    });
+  }
+
+  if (confirmSettingsVerification) {
+    confirmSettingsVerification.addEventListener('click', async () => {
+      try {
+        const excelPath = document.getElementById('verifyExcelPath').value;
+        const startingRow = parseInt(document.getElementById('verifyStartingRow').value) || 125;
+        const autoUpdateCheck = document.getElementById('verifyAutoUpdateCheck').checked;
+        const enableOTA = document.getElementById('verifyEnableOTA').checked;
+        const verboseLogging = document.getElementById('verifyVerboseLogging').checked;
+
+        await saveSettings(excelPath, startingRow, verboseLogging, autoUpdateCheck, enableOTA);
+        
+        // Close the modal - try multiple methods to ensure it closes
+        const modalEl = document.getElementById('settingsVerificationModal');
+        if (modalEl) {
+          // Try to get existing instance first
+          let modal = bootstrap.Modal.getInstance(modalEl);
+          if (modal) {
+            modal.hide();
+          } else {
+            // If no instance exists, create one and hide it immediately
+            modal = new bootstrap.Modal(modalEl);
+            modal.hide();
+          }
+        }
+
+        showSuccessAlert('Settings verified and saved!', 'Thank you for confirming your settings after the update.');
+        
+        // Show release notes if pending
+        if (pendingReleaseNotes) {
+          setTimeout(() => {
+            showReleaseNotes();
+            pendingReleaseNotes = false;
+          }, 500);
+        }
+      } catch (error) {
+        console.error('Error in settings verification:', error);
+        alert('Error saving settings: ' + error.message);
+      }
+    });
+  }
+
+
   
   // Check for updates on startup if enabled
   setTimeout(() => {

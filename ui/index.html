@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <meta name="ui-version" content="1.6.3">
+  <meta name="ui-version" content="1.6.5">
   <title>Lecture Logger</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
@@ -534,10 +534,109 @@
               <input type="number" class="form-control" id="initialStartingRow" required min="1" value="125">
               <div class="form-text">Row setting (Excel functionality disabled - for UI compatibility only)</div>
             </div>
+            
+            <!-- Update Settings Section -->
+            <div class="border-top pt-3 mt-4">
+              <h6 class="text-primary mb-3">🔄 Update Preferences</h6>
+              <div class="mb-3">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="initialAutoUpdateCheck" checked>
+                  <label class="form-check-label" for="initialAutoUpdateCheck">
+                    <strong>Automatic Update Checking</strong>
+                  </label>
+                </div>
+                <div class="form-text">Check for app updates when starting Lecture Logger</div>
+              </div>
+              <div class="mb-3">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="initialEnableOTA" checked>
+                  <label class="form-check-label" for="initialEnableOTA">
+                    <strong>Automatic UI Updates</strong>
+                  </label>
+                </div>
+                <div class="form-text">Allow interface improvements to download automatically</div>
+              </div>
+            </div>
           </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" id="saveInitialSetup">Get Started!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Verification Modal (after binary updates) -->
+  <div class="modal fade" id="settingsVerificationModal" tabindex="-1" aria-labelledby="settingsVerificationModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="settingsVerificationModalLabel">🔄 App Updated - Please Verify Settings</h5>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-info" role="alert">
+            <div class="d-flex align-items-center">
+              <span class="me-2">🎉</span>
+              <div>
+                <strong>Lecture Logger has been updated!</strong><br>
+                <small>Please review and confirm your settings are still correct.</small>
+              </div>
+            </div>
+          </div>
+          
+          <form id="settings-verification-form">
+            <div class="mb-3">
+              <label for="verifyExcelPath" class="form-label">Excel File Location</label>
+              <div class="input-group">
+                <input type="text" class="form-control" id="verifyExcelPath" required 
+                       placeholder="Select your Excel (.xlsx) file...">
+                <button class="btn btn-outline-secondary" type="button" id="verifyBrowseFileBtn">📁 Browse</button>
+                <input type="file" id="verifyFileInput" accept=".xlsx" style="display: none;">
+              </div>
+              <div class="form-text">File path setting (Excel functionality disabled - for UI compatibility only)</div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="verifyStartingRow" class="form-label">Starting Row Number</label>
+              <input type="number" class="form-control" id="verifyStartingRow" required min="1" value="125">
+              <div class="form-text">Row setting (Excel functionality disabled - for UI compatibility only)</div>
+            </div>
+            
+            <!-- Update Settings Section -->
+            <div class="border-top pt-3 mt-4">
+              <h6 class="text-primary mb-3">🔄 Update Preferences</h6>
+              <div class="mb-3">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="verifyAutoUpdateCheck" checked>
+                  <label class="form-check-label" for="verifyAutoUpdateCheck">
+                    <strong>Automatic Update Checking</strong>
+                  </label>
+                </div>
+                <div class="form-text">Check for app updates when starting Lecture Logger</div>
+              </div>
+              <div class="mb-3">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="verifyEnableOTA" checked>
+                  <label class="form-check-label" for="verifyEnableOTA">
+                    <strong>Automatic UI Updates</strong>
+                  </label>
+                </div>
+                <div class="form-text">Allow interface improvements to download automatically</div>
+              </div>
+              <div class="mb-3">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="verifyVerboseLogging">
+                  <label class="form-check-label" for="verifyVerboseLogging">
+                    <strong>Verbose Logging</strong>
+                  </label>
+                </div>
+                <div class="form-text">Enable detailed logging for troubleshooting</div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="confirmSettingsVerification">✅ Settings Look Good</button>
         </div>
       </div>
     </div>
@@ -801,6 +900,8 @@
             <div id="uiStatusDisplay" class="small text-muted mb-2"></div>
             <div class="form-text">Manage Over-The-Air UI updates. Changes require app restart.</div>
           </div>
+          
+
           
         </div>
         <div class="modal-footer">
