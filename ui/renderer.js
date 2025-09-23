@@ -1,7 +1,7 @@
 // ===== UI VERSION IDENTIFIER =====
 // This constant identifies the version of this UI file
 // It should be updated whenever this file is modified for OTA updates
-const THIS_UI_VERSION = '1.6.2';
+const THIS_UI_VERSION = '1.6.3';
 // ===================================
 
 // Excel functionality removed - keeping for UI compatibility
@@ -425,7 +425,8 @@ async function downloadUIFiles(version) {
     
     const filesToDownload = [
       { name: 'index.html', url: `${UI_FILES_BASE_URL}index.html` },
-      { name: 'renderer.js', url: `${UI_FILES_BASE_URL}renderer.js` }
+      { name: 'renderer.js', url: `${UI_FILES_BASE_URL}renderer.js` },
+      { name: 'package.json', url: `${UI_FILES_BASE_URL}package.json` }
     ];
     
     for (const file of filesToDownload) {
