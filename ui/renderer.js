@@ -1,7 +1,7 @@
 // ===== UI VERSION IDENTIFIER =====
 // This constant identifies the version of this UI file
 // It should be updated whenever this file is modified for OTA updates
-const THIS_UI_VERSION = '1.4.0';
+const THIS_UI_VERSION = '1.5.0';
 // ===================================
 
 // Excel functionality removed - keeping for UI compatibility
@@ -395,8 +395,17 @@ async function downloadUIFiles(version) {
           throw new Error(`HTTP ${response.status} for ${file.name}`);
         }
         
-        const content = await response.text();
+        let content = await response.text();
         const cachePath = path.join(LOCAL_UI_CACHE_DIR, file.name);
+        
+        // For HTML files, update the script src to point to cached renderer.js
+        if (file.name === 'index.html') {
+          const cachedRendererPath = path.join(LOCAL_UI_CACHE_DIR, 'renderer.js');
+          content = content.replace(
+            '<script src="renderer.js"></script>',
+            `<script src="${cachedRendererPath}"></script>`
+          );
+        }
         
         // Backup existing cached file
         if (fs.existsSync(cachePath)) {
@@ -1939,27 +1948,38 @@ document.addEventListener('DOMContentLoaded', function() {
   // Refresh Now button handler
   const refreshNowBtn = document.getElementById('refreshNowBtn');
   if (refreshNowBtn) {
-    refreshNowBtn.addEventListener('click', function() {
+    refreshNowBtn.addEventListener('click', async function() {
       // Close the notification first
       const notification = document.getElementById('uiUpdateNotification');
       if (notification) {
         notification.classList.remove('show');
       }
       
+      // Show loading state
+      this.disabled = true;
+      this.innerHTML = '🔄 Restarting...';
+      
       // Restart the Electron app to load cached UI files
-      setTimeout(() => {
+      setTimeout(async () => {
         try {
-          const { app } = require('electron').remote || require('@electron/remote');
-          if (app) {
-            app.relaunch();
-            app.exit();
-          } else {
-            // Fallback: just reload if remote is not available
+          // Use IPC to request app restart from main process
+          await ipcRenderer.invoke('restart-app');
+        } catch (error) {
+          console.warn('Could not restart app via IPC, trying direct method:', error);
+          try {
+            // Try direct access to app if available
+            const { app } = require('electron');
+            if (app) {
+              app.relaunch();
+              app.exit();
+            } else {
+              // Final fallback: just reload the page
+              location.reload();
+            }
+          } catch (fallbackError) {
+            console.warn('All restart methods failed, reloading page:', fallbackError);
             location.reload();
           }
-        } catch (error) {
-          console.warn('Could not restart app, falling back to reload:', error);
-          location.reload();
         }
       }, 200);
     });
