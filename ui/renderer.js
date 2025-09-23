@@ -1,7 +1,7 @@
 // ===== UI VERSION IDENTIFIER =====
 // This constant identifies the version of this UI file
 // It should be updated whenever this file is modified for OTA updates
-const THIS_UI_VERSION = '1.6.1';
+const THIS_UI_VERSION = '1.6.2';
 // ===================================
 
 // Excel functionality removed - keeping for UI compatibility
@@ -15,7 +15,6 @@ const { ipcRenderer, shell } = require('electron');
 let appSettings = {
   excelPath: '',
   startingRow: 125,
-  darkMode: false,
   verboseLogging: false,
   autoUpdateCheck: true,
   enableOTA: true, // Enable OTA UI updates
@@ -29,7 +28,7 @@ const currentVersion = packageJson.version;
 
 // Release notes
 const releaseNotes = {
-    "2.5.0": {
+    "2.5.3": {
         title: "Revolutionary UI OTA Update System & Enhanced User Experience",
         notes: [
           "🎨 **NEW: Over-The-Air UI Updates** - Interface automatically updates without reinstalling the app",
@@ -222,7 +221,35 @@ const UPDATE_CHECK_URL = 'https://raw.githubusercontent.com/andrew-jolley/websit
 // UI OTA Update system
 const UI_VERSION_URL = 'https://raw.githubusercontent.com/andrew-jolley/websites/refs/heads/main/ui-version.txt';
 const UI_FILES_BASE_URL = 'https://raw.githubusercontent.com/andrew-jolley/websites/refs/heads/main/ui/';
-const LOCAL_UI_CACHE_DIR = path.join(os.homedir(), 'Documents', 'LectureLogger-Cache');
+let LOCAL_UI_CACHE_DIR = null; // Will be set via IPC at startup
+
+// Initialize cache directory at startup
+async function initializeCacheDir() {
+  if (!LOCAL_UI_CACHE_DIR) {
+    LOCAL_UI_CACHE_DIR = await ipcRenderer.invoke('get-cache-dir');
+  }
+  return LOCAL_UI_CACHE_DIR;
+}
+
+// Delete UI cache directory
+async function deleteUICache() {
+  try {
+    const result = await ipcRenderer.invoke('delete-ui-cache');
+    if (result.success) {
+      logBasic('info', 'UI cache deleted', { message: result.message });
+      console.log('UI cache deleted successfully');
+      return { success: true, message: result.message };
+    } else {
+      logVerbose('warn', 'Failed to delete UI cache', { error: result.error });
+      console.warn('Failed to delete UI cache:', result.error);
+      return { success: false, error: result.error };
+    }
+  } catch (error) {
+    logVerbose('error', 'Error deleting UI cache', { error: error.message });
+    console.error('Error deleting UI cache:', error);
+    return { success: false, error: error.message };
+  }
+}
 
 // Update checking function
 async function checkForUpdates(manualCheck = false, useTestVersion = false) {
@@ -346,7 +373,8 @@ async function checkUIVersion() {
     
     logVerbose('info', 'Checking for UI updates');
     
-    // Ensure cache directory exists
+    // Ensure cache directory is initialized and exists
+    await initializeCacheDir();
     if (!fs.existsSync(LOCAL_UI_CACHE_DIR)) {
       fs.mkdirSync(LOCAL_UI_CACHE_DIR, { recursive: true });
     }
@@ -393,6 +421,8 @@ async function checkUIVersion() {
 }// Download and cache UI files
 async function downloadUIFiles(version) {
   try {
+    await initializeCacheDir();
+    
     const filesToDownload = [
       { name: 'index.html', url: `${UI_FILES_BASE_URL}index.html` },
       { name: 'renderer.js', url: `${UI_FILES_BASE_URL}renderer.js` }
@@ -1159,16 +1189,9 @@ function loadSettings() {
       if (parsedSettings && typeof parsedSettings === 'object') {
         appSettings = { ...appSettings, ...parsedSettings };
         
-        // Apply theme
-        if (appSettings.darkMode) {
-          document.documentElement.setAttribute('data-theme', 'dark');
-        } else {
-          document.documentElement.removeAttribute('data-theme');
-        }
-        
         // Only log if verbose logging is enabled
         if (appSettings.verboseLogging) {
-          logBasic('info', 'Settings loaded successfully', { theme: appSettings.darkMode ? 'dark' : 'light', verboseLogging: appSettings.verboseLogging });
+          logBasic('info', 'Settings loaded successfully', { verboseLogging: appSettings.verboseLogging });
         }
         return true; // Settings exist and are valid
       }
@@ -1184,13 +1207,13 @@ function loadSettings() {
 }
 
 // Save settings to localStorage
-function saveSettings(excelPath, startingRow, darkMode, verboseLogging, autoUpdateCheck, enableOTA, testVersion = '') {
+async function saveSettings(excelPath, startingRow, verboseLogging, autoUpdateCheck, enableOTA, testVersion = '') {
   const wasVerboseLogging = appSettings.verboseLogging;
+  const wasOTAEnabled = appSettings.enableOTA;
   
   appSettings = {
     excelPath: excelPath,
     startingRow: parseInt(startingRow),
-    darkMode: darkMode,
     verboseLogging: verboseLogging,
     autoUpdateCheck: autoUpdateCheck,
     enableOTA: enableOTA,
@@ -1199,11 +1222,20 @@ function saveSettings(excelPath, startingRow, darkMode, verboseLogging, autoUpda
   
   localStorage.setItem('lectureLoggerSettings', JSON.stringify(appSettings));
   
-  // Apply theme immediately
-  if (darkMode) {
-    document.documentElement.setAttribute('data-theme', 'dark');
-  } else {
-    document.documentElement.removeAttribute('data-theme');
+  // Handle OTA toggle - delete cache when disabled
+  if (wasOTAEnabled && !enableOTA) {
+    // OTA was enabled, now disabled - delete cache
+    console.log('OTA disabled - deleting UI cache...');
+    const deleteResult = await deleteUICache();
+    if (deleteResult.success) {
+      showSuccessAlert('OTA Updates Disabled', 'UI cache has been cleared');
+    } else {
+      showErrorAlert('Cache Cleanup Warning', 'Could not delete UI cache: ' + deleteResult.error);
+    }
+  } else if (!wasOTAEnabled && enableOTA) {
+    // OTA was disabled, now enabled
+    console.log('OTA enabled - cache will be created when needed');
+    showSuccessAlert('OTA Updates Enabled', 'UI updates will now be cached automatically');
   }
   
   // Handle verbose logging toggle
@@ -1362,7 +1394,10 @@ function showReleaseNotes() {
 }
 
 // Show settings modal on first run
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+  // Initialize cache directory first
+  await initializeCacheDir();
+  
   // Initialize UI system
   const uiStatus = loadUIFiles();
   logVerbose('info', 'UI system initialized', uiStatus);
@@ -1473,10 +1508,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Populate current settings in the modal
     document.getElementById('excelPath').value = appSettings.excelPath || '';
     document.getElementById('startingRow').value = appSettings.startingRow || 125;
-    document.getElementById('darkModeToggle').checked = appSettings.darkMode || false;
     document.getElementById('verboseLogging').checked = appSettings.verboseLogging || false;
     document.getElementById('autoUpdateCheck').checked = appSettings.autoUpdateCheck !== false; // Default to true
-    document.getElementById('enableOTAToggle').checked = appSettings.enableOTA !== false; // Default to true
     document.getElementById('enableOTAToggle').checked = appSettings.enableOTA !== false; // Default to true
     
     const settingsModal = new bootstrap.Modal(document.getElementById('settingsModal'));
@@ -1643,7 +1676,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   
   // Handle initial setup form submission
-  document.getElementById('saveInitialSetup').addEventListener('click', function() {
+  document.getElementById('saveInitialSetup').addEventListener('click', async function() {
     const excelPath = document.getElementById('initialExcelPath').value;
     const startingRow = document.getElementById('initialStartingRow').value;
     const errorDiv = document.getElementById('initialFilePathError');
@@ -1670,7 +1703,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (excelPath && startingRow) {
       // Save with default settings for first-time setup (no test version)
-      saveSettings(excelPath, startingRow, false, false, true, '');
+      await saveSettings(excelPath, startingRow, false, false, true, '');
       const initialSetupModal = bootstrap.Modal.getInstance(document.getElementById('initialSetupModal'));
       initialSetupModal.hide();
       
@@ -1691,10 +1724,9 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   
   // Handle settings form submission - moved inside DOMContentLoaded
-  document.getElementById('saveSettings').addEventListener('click', function() {
+  document.getElementById('saveSettings').addEventListener('click', async function() {
     const excelPath = document.getElementById('excelPath').value;
     const startingRow = document.getElementById('startingRow').value;
-    const darkMode = document.getElementById('darkModeToggle').checked;
     const verboseLogging = document.getElementById('verboseLogging').checked;
     const autoUpdateCheck = document.getElementById('autoUpdateCheck').checked;
     const enableOTA = document.getElementById('enableOTAToggle').checked;
@@ -1721,7 +1753,7 @@ document.addEventListener('DOMContentLoaded', function() {
     pathInput.classList.add('is-valid');
     
     if (excelPath && startingRow) {
-      saveSettings(excelPath, startingRow, darkMode, verboseLogging, autoUpdateCheck, enableOTA, appSettings.testVersion || '');
+      await saveSettings(excelPath, startingRow, verboseLogging, autoUpdateCheck, enableOTA, appSettings.testVersion || '');
       const settingsModal = bootstrap.Modal.getInstance(document.getElementById('settingsModal'));
       settingsModal.hide();
       
